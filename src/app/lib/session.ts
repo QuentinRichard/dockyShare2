@@ -2,7 +2,6 @@ import { Rules } from '@/db/schema/rules'
 import { User } from '@/db/schema/user'
 import { JWTPayload, SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import 'server-only'
 
 const secretKey = 'secret_code';//process.env.SESSION_SECRET
@@ -42,9 +41,9 @@ export async function getSession() {
     return await decrypt(session);
 }
 
-export async function createSession(user: User, rule?: Rules) {
+export async function createSession(user: User, rules?: Rules) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    const session = await encrypt({ userId: user.id, userEmail: user.email, userRule: rule, expiresAt })
+    const session = await encrypt({ userId: user.id, email: user.email, rules, expiresAt })
     const cookieStore = await cookies()
 
     cookieStore.set('session', session, {
@@ -54,33 +53,37 @@ export async function createSession(user: User, rule?: Rules) {
         sameSite: 'lax',
         path: '/',
     })
+    cookieStore.set('rules', JSON.stringify(rules))
+    cookieStore.set('userId', JSON.stringify(user.id))
 }
 export async function updateSession() {
-    const session = (await cookies()).get('session')?.value
-    const payload = await decrypt(session)
+    const session = (await cookies()).get('session')?.value;
+    const payload = await decrypt(session);
+    const rules = (await cookies()).get('rules')?.value;
 
     if (!session || !payload) {
         return null
     }
 
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    const newSession = await encrypt({ userId: payload.userId, email: payload.userEmail, rules, expiresAt })
 
     const cookieStore = await cookies()
-    cookieStore.set('session', session, {
+    cookieStore.set('session', newSession, {
         httpOnly: true,
         secure: true,
-        expires: expires,
+        expires: expiresAt,
         sameSite: 'lax',
         path: '/',
     })
+    cookieStore.set('rules', JSON.stringify(rules))
+    cookieStore.set('userId', JSON.stringify(payload.userId))
 }
 
 export async function deleteSession() {
     const cookieStore = await cookies()
     cookieStore.delete('session')
+    cookieStore.delete('rules');
+    cookieStore.delete('userId');
 }
 
-export async function logout() {
-    await deleteSession()
-    redirect('/login')
-}

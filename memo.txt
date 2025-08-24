@@ -1,0 +1,9 @@
+TODO :
+------
+=> Prise en compte de icon dans propertyTree
+
+
+
+Done between commit:
+--------------------
+Rename Rules enum

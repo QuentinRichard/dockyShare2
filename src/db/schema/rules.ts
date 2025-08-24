@@ -1,7 +1,7 @@
-import { pgTable, serial, text, jsonb } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
 
 
-export enum DockyType {
+export enum DockyRulesType {
   Management,
   HomePageDocky,
   Docky,
@@ -9,7 +9,7 @@ export enum DockyType {
   Calendar,
   Event,
 }
-export enum DockAction {
+export enum DockyRulesAction {
   Create,
   Edit,
   Delete,

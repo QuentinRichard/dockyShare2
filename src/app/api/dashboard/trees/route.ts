@@ -1,7 +1,7 @@
-import { TreePutRequestSchema, TreeRequestSchema } from '@/app/lib/interfaces/treesProperties';
+import { TreePutRequestSchema, TreeRequestSchema } from '@/app/lib/interfaces/treesRequest';
 import { getSession } from '@/app/lib/session';
 import { IPropertiesTable } from '@/db/schema/property';
-import { addTree, getSortedTreesList, getTree } from '@/repositories/PropertyRepository';
+import { addTree, getSortedTreesList, getTree, updateTree } from '@/repositories/PropertyRepository';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -77,7 +77,11 @@ export async function PUT(request: Request) {
             errors: "Invalide rules",
         }
     }
+    currentTree.name = name;
+    currentTree.content = content;
+    currentTree.parentId = parentId;
 
+    await updateTree(currentTree);
 
     return NextResponse.json({ status: "succes" });
 }

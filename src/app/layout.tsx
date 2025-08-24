@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { SWRConfig } from 'swr';
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,13 +30,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen flex flex-col bg-amber-50">
-          <Header />
-          <main className="flex-grow p-0">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <SWRConfig
+          value={{
+            fallback: {
+              // We do NOT await getUser() here
+              // Only components that read this data will suspend
+              //'/api/user': getUser(),
+            },
+          }}
+        >
+          <div className="min-h-screen flex flex-col bg-amber-50">
+            <Header />
+            <main className="flex-grow p-0">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </SWRConfig>
       </body>
     </html>
   );

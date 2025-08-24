@@ -7,6 +7,7 @@ import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 export interface IPropertiesTable {
   id?: number
   name: string
+  icon?: string
   content: string
   parentId?: number
   children?: IPropertiesTable[]
@@ -21,39 +22,10 @@ export interface IDrizzleTreeProperty<TColumn extends Column = Column<any>> {
   dialect: string;
 }
 
-// export interface CTreeProperty {
-//   id: number
-//   name: string
-//   content: string
-//   parentId: IPropertiesTable
-//   children: IPropertiesTable[]
-//   userId: User
-// }
-
-// export const propertiesTable: PgTable<IDrizzleTreeProperty> = pgTable("property", {
-//   id: serial("id").primaryKey(),
-//   name: text("name").notNull(),
-//   content: text("content"),
-//   /* eslint-disable @typescript-eslint/no-explicit-any */
-//   parentId: integer("parent_id").references((): AnyPgColumn => propertiesTable.id),
-//   userId: integer("user_id").references(() => usersTable.id, { onDelete: "set null" }),
-// });
-
-// export const treeRelations = relations(propertiesTable, ({ one, many }) => ({
-//   parentId: one(propertiesTable, {
-//     fields: [propertiesTable.parentId],
-//     references: [propertiesTable.id],
-//   }),
-//   children: many(propertiesTable),
-//   userId: one(usersTable, {
-//     fields: [propertiesTable.userId],
-//     references: [usersTable.id],
-//   }),
-// }));
-
 export const propertiesTable = pgTable('property', {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  icon: text("icon"),
   content: text("content"),
   /* eslint-disable @typescript-eslint/no-explicit-any */
   parentId: integer("parent_id"),

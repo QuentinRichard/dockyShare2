@@ -1,9 +1,9 @@
-import { eq, like } from 'drizzle-orm';
-import { usersTable, User } from "@/db/schema/user";
-import { rulesTable, Rules } from "@/db/schema/rules";
 import dbConnexion from '@/db/connexion';
-import { EnumBasicRules } from './RulesRepository';
+import { Rules, rulesTable } from "@/db/schema/rules";
+import { User, usersTable } from "@/db/schema/user";
 import bcrypt from 'bcryptjs';
+import { eq, like } from 'drizzle-orm';
+import { EnumBasicRules } from './RulesRepository';
 
 
 export interface UsersRules {

@@ -38,7 +38,6 @@ export default async function middleware(req: NextRequest) {
 
 
 
-
     // const responseTime = Date.now() - start;
     // logger.info({
     //     method: req.method,

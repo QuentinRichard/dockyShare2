@@ -6,22 +6,22 @@ import { useEffect, useState } from 'react';
 
 
 export default function Dashboard() {
-    const [treeData, setTreeData] = useState([]);
+    const [treeData] = useState([]);
 
     useEffect(() => {
-        (async function () {
-            try {
-                const data = await fetch(`/api/dashboard/tree`, {
-                    method: "GET",
-                })
-                if (data.ok) {
-                    const treeData = await data.json();
-                    setTreeData(treeData);
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        })();
+        // (async function () {
+        //     try {
+        //         const data = await fetch(`/api/dashboard/tree`, {
+        //             method: "GET",
+        //         })
+        //         if (data.ok) {
+        //             const treeData = await data.json();
+        //             setTreeData(treeData);
+        //         }
+        //     } catch (err) {
+        //         console.log(err);
+        //     }
+        // })();
     }, [treeData])
 
 

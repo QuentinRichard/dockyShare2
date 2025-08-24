@@ -1,11 +1,11 @@
 'use server'
-import { SignupFormSchema, SigninFormSchema } from '@/app/lib/definitions';
+import { SigninFormSchema, SignupFormSchema } from '@/app/lib/interfaces/signForm';
+import { createSession, deleteSession } from '@/app/lib/session';
+import { Rules } from '@/db/schema/rules';
+import { User } from '@/db/schema/user';
+import { createUser, findUserByIdentifiant } from '@/repositories/UserRepository';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
-import { createSession, deleteSession } from '@/app/lib/session';
-import { createUser, findUserByIdentifiant } from '@/repositories/UserRepository';
-import { User } from '@/db/schema/user';
-import { Rules } from '@/db/schema/rules';
 
 
 export async function signup(formData: FormData) {
@@ -62,7 +62,7 @@ export async function signin(formData: FormData) {
         console.log(`Failed login attempt for user: ${email}`);
         return { error: 'Identifiant ou mot de passe incorrect' };
     }
-    user.users.password = undefined;
+
     // 4. Create user session
     await createSession(user.users as User, user.rules as Rules);
     // 5. Redirect user

@@ -1,47 +1,47 @@
 import dbConnexion from "@/db/connexion";
-import { AdminRules, BasicRules, DockAction, DockyType, Permissions, Rules, rulesTable } from "@/db/schema/rules";
+import { AdminRules, BasicRules, DockyRulesAction, DockyRulesType, Permissions, Rules, rulesTable } from "@/db/schema/rules";
 import { like } from 'drizzle-orm';
 
 
-function checkBasicRight(action: DockAction, userPerms: BasicRules): boolean {
+function checkBasicRight(action: DockyRulesAction, userPerms: BasicRules): boolean {
     switch (action) {
-        case DockAction.Create:
+        case DockyRulesAction.Create:
             return userPerms.create === true;
-        case DockAction.Edit:
+        case DockyRulesAction.Edit:
             return userPerms.edit === true;
-        case DockAction.Share:
+        case DockyRulesAction.Share:
             return userPerms.share === true;
-        case DockAction.Delete:
+        case DockyRulesAction.Delete:
             return userPerms.delete === true;
         default:
             return false;
     }
 }
 
-function checkAdminRight(action: DockAction, userPerms: AdminRules): boolean {
+function checkAdminRight(action: DockyRulesAction, userPerms: AdminRules): boolean {
     switch (action) {
-        case DockAction.AcceuilPageMng:
+        case DockyRulesAction.AcceuilPageMng:
             return userPerms.AcceuilPageMng === true;
-        case DockAction.UserMng:
+        case DockyRulesAction.UserMng:
             return userPerms.userMng === true;
         default:
             return false;
     }
 }
 
-export function haveRight(docky: DockyType, action: DockAction, userPermissions: Permissions): boolean {
+export function haveRight(docky: DockyRulesType, action: DockyRulesAction, userPermissions: Permissions): boolean {
     switch (docky) {
-        case DockyType.HomePageDocky:
+        case DockyRulesType.HomePageDocky:
             return checkBasicRight(action, userPermissions.homePage);
-        case DockyType.Calendar:
+        case DockyRulesType.Calendar:
             return checkBasicRight(action, userPermissions.calendar);
-        case DockyType.Docky:
+        case DockyRulesType.Docky:
             return checkBasicRight(action, userPermissions.docky);
-        case DockyType.Event:
+        case DockyRulesType.Event:
             return checkBasicRight(action, userPermissions.event);
-        case DockyType.Management:
+        case DockyRulesType.Management:
             return checkAdminRight(action, userPermissions.management);
-        case DockyType.Survey:
+        case DockyRulesType.Survey:
             return checkBasicRight(action, userPermissions.survey);
         default:
             return false;

@@ -6,7 +6,8 @@ export async function seedAdminTrees1() {
     const blibli: IPropertiesTable = {
         content: '',
         name: 'Blibliothéque',
-        userId: 10
+        userId: 10,
+        icon: 'book-open-check'
     };
     const bibliId = await addTree(blibli);
     console.log(bibliId);
@@ -15,24 +16,28 @@ export async function seedAdminTrees1() {
         content: '',
         name: 'Article',
         userId: 10,
-        parentId: bibliId
+        parentId: bibliId,
+        icon: 'wallpaper'
     };
-    const articleId = await addTree(article);
-
-    const survey: IPropertiesTable = {
-        content: '',
-        name: 'Survey',
-        userId: 10,
-        parentId: articleId
-    };
-    await addTree(survey);
+    await addTree(article);
 
     const docu: IPropertiesTable = {
         content: '',
         name: 'Document',
         userId: 10,
-        parentId: bibliId
+        parentId: bibliId,
+        icon: 'scroll-text'
     };
     await addTree(docu);
+
+    const survey: IPropertiesTable = {
+        content: '',
+        name: 'Survey',
+        userId: 10,
+        parentId: undefined,
+        icon: 'book-open-check'
+    };
+
+    await addTree(survey);
 }
 

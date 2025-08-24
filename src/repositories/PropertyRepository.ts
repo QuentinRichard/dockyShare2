@@ -3,26 +3,12 @@ import { IPropertiesTable, propertiesTable } from '@/db/schema/property';
 import { eq } from 'drizzle-orm';
 import { console } from 'inspector';
 
-// export interface TreesRecord {
-//   /* eslint-disable @typescript-eslint/no-explicit-any */
-//   [x: string]: any;
-//   invitees: never;
-//   inviter: never;
-// }
 
-export interface TreesRecord {
-  name: string;
-  id: number;
-  content: string | null;
-  parentId?: number | null;
-  userId: number | null;
-  children?: TreesRecord[];
-}
 
-export async function sortTrees(trees: TreesRecord[]): Promise<TreesRecord[]> {
+export async function sortTrees(trees: IPropertiesTable[]): Promise<IPropertiesTable[]> {
 
   const map = new Map();
-  const roots: TreesRecord[] = [];
+  const roots: IPropertiesTable[] = [];
 
   // Préparer une entrée pour chaque noeud
   trees.forEach(item => {
@@ -46,28 +32,42 @@ export async function sortTrees(trees: TreesRecord[]): Promise<TreesRecord[]> {
   return roots;
 }
 
-export async function getTrees(userId: number): Promise<TreesRecord[]> {
+export async function getTrees(userId: number): Promise<IPropertiesTable[]> {
   try {
     const result = await dbConnexion.query.propertiesTable.findMany({
       // with: {
       //   parentId: true,   // liste des users invités par ce user
       //   children: true,    // user qui a invité ce user
       // },
+      columns: {
+        id: true,
+        name: true,
+        icon: true,
+        content: true,
+        parentId: true,
+      },
       where: eq(propertiesTable.userId, userId)
     });
-    return result;
+    return result as unknown as IPropertiesTable[];
   } catch (e) {
     console.log(e);
     return []
   }
 }
 
-export async function getTree(treeId: number): Promise<TreesRecord | undefined> {
+export async function getTree(treeId: number): Promise<IPropertiesTable | undefined> {
   try {
     const result = await dbConnexion.query.propertiesTable.findFirst({
-      where: eq(propertiesTable.userId, treeId)
+      where: eq(propertiesTable.userId, treeId),
+      columns: {
+        id: true,
+        name: true,
+        icon: true,
+        content: true,
+        parentId: true,
+      },
     });
-    return result;
+    return result as IPropertiesTable;
   } catch (e) {
     console.log(e);
     return undefined;
@@ -84,7 +84,8 @@ export async function addTree(property: IPropertiesTable): Promise<number> {
     name: property.name,
     content: property.content,
     userId: property.userId,
-    parentId: property.parentId
+    parentId: property.parentId,
+    icon: property.icon
   };
 
   const id = await dbConnexion.insert(propertiesTable).values(newRule).returning({ id: propertiesTable.id });
