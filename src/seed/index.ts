@@ -1,11 +1,11 @@
-import { seedRules1 } from './seedRule1';
+import { seedAdminTrees1 } from './seedAdminTrees';
 
 //History
 // seedRules1: to set the default profile for creating User account
 
 async function main() {
     console.log("Seed Start !!");
-    await seedRules1();
+    await seedAdminTrees1();
     console.log("Seed End !!");
 }
 

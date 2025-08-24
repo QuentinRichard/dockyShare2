@@ -1,6 +1,6 @@
-import { like } from 'drizzle-orm';
 import dbConnexion from "@/db/connexion";
-import { rulesTable, Rules, Permissions, DockyType, DockAction, BasicRules, AdminRules } from "@/db/schema/rules";
+import { AdminRules, BasicRules, DockAction, DockyType, Permissions, Rules, rulesTable } from "@/db/schema/rules";
+import { like } from 'drizzle-orm';
 
 
 function checkBasicRight(action: DockAction, userPerms: BasicRules): boolean {
@@ -71,7 +71,8 @@ export async function addRule(rule: Rules) {
         permissions: rule.permissions
     };
 
-    return await dbConnexion.insert(rulesTable).values(newRule);
+    const id = await dbConnexion.insert(rulesTable).values(newRule).returning({ id: rulesTable.id });
+    return id[0].id
 }
 
 

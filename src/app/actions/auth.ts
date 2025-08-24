@@ -2,7 +2,7 @@
 import { SignupFormSchema, SigninFormSchema } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
-import { createSession } from '@/app/lib/session';
+import { createSession, deleteSession } from '@/app/lib/session';
 import { createUser, findUserByIdentifiant } from '@/repositories/UserRepository';
 import { User } from '@/db/schema/user';
 import { Rules } from '@/db/schema/rules';
@@ -67,4 +67,13 @@ export async function signin(formData: FormData) {
     await createSession(user.users as User, user.rules as Rules);
     // 5. Redirect user
     redirect('/dashboard')
+}
+
+
+export async function signout() {
+
+    // 4. Create user session
+    await deleteSession();
+    // 5. Redirect user
+    redirect('/')
 }

@@ -1,12 +1,19 @@
-import 'server-only'
-import { SignJWT, jwtVerify, JWTPayload } from 'jose'
+import { Rules } from '@/db/schema/rules'
+import { User } from '@/db/schema/user'
+import { JWTPayload, SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { User } from '@/db/schema/user'
-import { Rules } from '@/db/schema/rules'
+import 'server-only'
 
 const secretKey = 'secret_code';//process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
+
+export interface Session {
+    userId: number
+    userEmail: string
+    userRule: Rules
+    expiresAt: Date
+}
 
 export async function encrypt(payload: JWTPayload) {
     return new SignJWT(payload)
@@ -16,15 +23,23 @@ export async function encrypt(payload: JWTPayload) {
         .sign(encodedKey)
 }
 
-export async function decrypt(session: string | undefined = '') {
+export async function decrypt(session: string | undefined = ''): Promise<Session | null> {
     try {
         const { payload } = await jwtVerify(session, encodedKey, {
             algorithms: ['HS256'],
         })
-        return payload
+        return payload as unknown as Session;
     } catch (error) {
-        console.log('Failed to verify session')
+        throw new Error('Failed to verify session');
     }
+}
+export async function getSession() {
+    const session = (await cookies()).get('session')?.value
+
+    if (!session)
+        return null;
+
+    return await decrypt(session);
 }
 
 export async function createSession(user: User, rule?: Rules) {

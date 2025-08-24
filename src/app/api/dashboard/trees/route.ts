@@ -1,0 +1,113 @@
+import { TreePutRequestSchema, TreeRequestSchema } from '@/app/lib/interfaces/treesProperties';
+import { getSession } from '@/app/lib/session';
+import { IPropertiesTable } from '@/db/schema/property';
+import { addTree, getSortedTreesList, getTree } from '@/repositories/PropertyRepository';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+    await getSession();
+
+    const ret = await getSortedTreesList(10);
+
+    return NextResponse.json(ret);
+}
+
+export async function POST(request: Request) {
+
+    const session = await getSession();
+
+    const data = await request.json();
+    const validatedFields = TreeRequestSchema.safeParse({
+        name: data.name,
+        content: data.content,
+        parentId: data.parentId
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+    const { name, content, parentId } = validatedFields.data;
+
+    // Check if the owner of parent is the user
+    const parentTree = await getTree(parentId);
+    if (!parentTree || parentTree?.userId !== session?.userId) {
+        return {
+            errors: "Invalide rules",
+        }
+    }
+
+    const prop: IPropertiesTable = {
+        name,
+        content,
+        parentId,
+        userId: session?.userId,
+    }
+    const id = await addTree(prop);
+
+    return NextResponse.json(id);
+}
+
+export async function PUT(request: Request) {
+
+    const session = await getSession();
+
+    const data = await request.json();
+    const validatedFields = TreePutRequestSchema.safeParse({
+        id: data.id,
+        name: data.name,
+        content: data.content,
+        parentId: data.parentId
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+    const { id, name, content, parentId } = validatedFields.data;
+
+    // Check if the owner of parent is the user
+    const currentTree = await getTree(id);
+    if (!currentTree || currentTree?.userId !== session?.userId) {
+        return {
+            errors: "Invalide rules",
+        }
+    }
+
+
+    return NextResponse.json({ status: "succes" });
+}
+
+
+export async function DELETE(request: Request) {
+
+    const session = await getSession();
+
+    const data = await request.json();
+    const validatedFields = TreePutRequestSchema.safeParse({
+        id: data.id
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+    const { id } = validatedFields.data;
+
+    // Check if the owner of parent is the user
+    const currentTree = await getTree(id);
+    if (!currentTree || currentTree?.userId !== session?.userId) {
+        return {
+            errors: "Invalide rules",
+        }
+    }
+
+
+    return NextResponse.json({ status: "succes" });
+}
