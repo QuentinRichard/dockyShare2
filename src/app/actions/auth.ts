@@ -5,6 +5,7 @@ import { Rules } from '@/db/schema/rules';
 import { User } from '@/db/schema/user';
 import { createUser, findUserByIdentifiant } from '@/repositories/UserRepository';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 
@@ -75,5 +76,5 @@ export async function signout() {
     // 4. Create user session
     await deleteSession();
     // 5. Redirect user
-    redirect('/')
+    revalidatePath('/')
 }

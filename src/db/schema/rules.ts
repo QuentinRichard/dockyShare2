@@ -5,9 +5,9 @@ export enum DockyRulesType {
   Management,
   HomePageDocky,
   Docky,
-  Survey,
   Calendar,
   Event,
+  Sharing,
 }
 export enum DockyRulesAction {
   Create,
@@ -35,15 +35,15 @@ export class Permissions {
   management: AdminRules
   homePage: BasicRules
   docky: BasicRules
-  survey: BasicRules
   calendar: BasicRules
   event: BasicRules
+  sharing: BasicRules
 
-  constructor(management: AdminRules, homePage: BasicRules, docky: BasicRules, survey: BasicRules, calendar: BasicRules, event: BasicRules) {
+  constructor(management: AdminRules, homePage: BasicRules, docky: BasicRules, sharing: BasicRules, calendar: BasicRules, event: BasicRules) {
     this.management = management;
     this.homePage = homePage;
     this.docky = docky;
-    this.survey = survey;
+    this.sharing = sharing;
     this.calendar = calendar;
     this.event = event;
 

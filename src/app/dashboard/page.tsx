@@ -26,7 +26,7 @@ export default function Dashboard() {
 
 
     return (
-        <div className="w-full h-full flex flex-row align-top text-left border-gray-400 border-2">
+        <div className="w-full h-full flex align-top text-left border-gray-400 border-2">
 
             <DashMenu />
 
@@ -35,13 +35,13 @@ export default function Dashboard() {
             <div className="absolute top-0 right-0 w-1 h-full bg-gray-400 cursor-col-resize"
                 onMouseDown={(e) => {
                     e.preventDefault();
-                    const move = (ev) => handleResize(ev);
-                    const up = () => {
-                        window.removeEventListener("mousemove", move);
-                        window.removeEventListener("mouseup", up);
-                    };
-                    window.addEventListener("mousemove", move);
-                    window.addEventListener("mouseup", up);
+                    // const move = (ev) => handleResize(ev);
+                    // const up = () => {
+                    //     window.removeEventListener("mousemove", move);
+                    //     window.removeEventListener("mouseup", up);
+                    // };
+                    // window.addEventListener("mousemove", move);
+                    // window.addEventListener("mouseup", up);
                 }}>
             </div>
 

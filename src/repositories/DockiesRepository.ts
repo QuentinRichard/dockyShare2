@@ -1,7 +1,32 @@
 import dbConnexion from '@/db/connexion';
-import { DockyFileChildren, DockyFileData, DockyFileTypeEnum, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
-import { and, eq } from 'drizzle-orm';
+import { DockyFileChildren, DockyFileData, DockyFileTypeEnum, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
+import { and, eq, like } from 'drizzle-orm';
+import { generateSlug } from "random-word-slugs";
+import slug from 'slug';
 
+
+export async function getDockySlug(name: string) {
+    const nameSlug = slug(name);
+    const test1 = await dbConnexion
+        .select()
+        .from(dockiesTable)
+        .where(eq(dockiesTable.slug, nameSlug));
+    if (test1.length) {
+        const count = await dbConnexion
+            .select()
+            .from(dockiesTable)
+            .where(like(dockiesTable.slug, nameSlug));
+        const test2 = await dbConnexion
+            .select()
+            .from(dockiesTable)
+            .where(eq(dockiesTable.slug, `${nameSlug}${count}`));
+        if (test2.length) {
+            return generateSlug();
+        }
+    }
+    return nameSlug;
+
+}
 
 export async function getDockies(userId: number, type?: string | null): Promise<DockyFileData[]> {
     try {
@@ -114,7 +139,7 @@ export async function createDocky(docky: DockyFileData): Promise<number> {
     return id[0].id;
 }
 
-export async function updateDocky(docky: DockyFileData): Promise<number | undefined> {
+export async function updateDocky(docky: UpdateDockyFileData): Promise<number | undefined> {
     const id = docky.id;
     docky.id = undefined;
     await dbConnexion.update(dockiesTable).set({ ...docky }).where(eq(dockiesTable.id, id!));

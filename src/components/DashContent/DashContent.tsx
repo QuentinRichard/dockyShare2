@@ -1,9 +1,10 @@
 'use client'
 
+
 export default function DashContent() {
     return (
         <div className="border-gray-400 border-2 w-full shrink">
-            eee
+
             {/* <div className="p-4 sm:ml-64">
                     <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
                         <div className="grid grid-cols-3 gap-4 mb-4">

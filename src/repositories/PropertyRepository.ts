@@ -43,6 +43,7 @@ export async function getTrees(userId: number): Promise<IPropertiesTable[]> {
         id: true,
         name: true,
         icon: true,
+        type: true,
         content: true,
         parentId: true,
       },
@@ -63,6 +64,7 @@ export async function getTree(treeId: number): Promise<IPropertiesTable | undefi
         id: true,
         name: true,
         icon: true,
+        type: true,
         content: true,
         parentId: true,
       },
@@ -82,10 +84,11 @@ export async function getSortedTreesList(userId: number) {
 export async function addTree(property: IPropertiesTable): Promise<number> {
   const newRule: typeof propertiesTable.$inferInsert = {
     name: property.name,
+    icon: property.icon,
+    type: property.type,
     content: property.content,
-    userId: property.userId,
     parentId: property.parentId,
-    icon: property.icon
+    userId: property.userId,
   };
 
   const id = await dbConnexion.insert(propertiesTable).values(newRule).returning({ id: propertiesTable.id });

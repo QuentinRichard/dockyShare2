@@ -26,6 +26,31 @@ export const rules = pgTable("rules", {
 	unique("rules_name_unique").on(table.name),
 ]);
 
+export const dockies = pgTable("dockies", {
+	id: serial().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text().notNull(),
+	data: jsonb(),
+	userId: integer("user_id"),
+	type: text(),
+	slug: text().notNull(),
+	cat: text(),
+	isPublic: integer("is_public"),
+	treeId: integer("tree_id"),
+}, (table) => [
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "dockies_user_id_users_id_fk"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.treeId],
+			foreignColumns: [property.id],
+			name: "dockies_tree_id_property_id_fk"
+		}).onDelete("set null"),
+	unique("dockies_slug_unique").on(table.slug),
+]);
+
 export const property = pgTable("property", {
 	id: serial().primaryKey().notNull(),
 	name: text().notNull(),
@@ -34,21 +59,6 @@ export const property = pgTable("property", {
 	userId: integer("user_id"),
 	icon: text(),
 });
-
-export const dockies = pgTable("dockies", {
-	id: serial().primaryKey().notNull(),
-	name: text().notNull(),
-	description: text().notNull(),
-	data: jsonb(),
-	userId: integer("user_id"),
-	type: text(),
-}, (table) => [
-	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "dockies_user_id_users_id_fk"
-		}).onDelete("set null"),
-]);
 
 export const dockiesChildren = pgTable("dockies_children", {
 	order: integer(),

@@ -1,5 +1,5 @@
-//import { seedDocky1 } from './seedDocky';
-import { seedAdminTrees1 } from './seedAdminTrees';
+import { seedDocky1 } from './seedDocky';
+//import { seedAdminTrees1 } from './seedAdminTrees';
 //import { seedRules1 } from './seedRules1';
 
 //History
@@ -8,7 +8,7 @@ import { seedAdminTrees1 } from './seedAdminTrees';
 
 async function main() {
     console.log("Seed Start !!");
-    await seedAdminTrees1();
+    await seedDocky1();
     console.log("Seed End !!");
 }
 

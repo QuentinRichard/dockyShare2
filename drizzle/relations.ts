@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { rules, users, dockies } from "./schema";
+import { rules, users, dockies, property } from "./schema";
 
 export const usersRelations = relations(users, ({one, many}) => ({
 	rule: one(rules, {
@@ -18,4 +18,12 @@ export const dockiesRelations = relations(dockies, ({one}) => ({
 		fields: [dockies.userId],
 		references: [users.id]
 	}),
+	property: one(property, {
+		fields: [dockies.treeId],
+		references: [property.id]
+	}),
+}));
+
+export const propertyRelations = relations(property, ({many}) => ({
+	dockies: many(dockies),
 }));

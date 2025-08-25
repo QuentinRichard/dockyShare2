@@ -29,7 +29,7 @@ export async function decrypt(session: string | undefined = ''): Promise<Session
         })
         return payload as unknown as Session;
     } catch (error) {
-        throw new Error('Failed to verify session');
+        throw new Error(`Failed to verify session ${(error as Error).message}`);
     }
 }
 export async function getSession() {

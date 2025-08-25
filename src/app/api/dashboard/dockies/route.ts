@@ -1,9 +1,9 @@
 import { DockyPutRequestSchema, DockyRequestSchema } from '@/app/lib/interfaces/dockyRequest';
-import { TreePutRequestSchema } from '@/app/lib/interfaces/treesRequest';
 import { getSession } from '@/app/lib/session';
 import { DockyFileDataChildren } from '@/db/schema/dockies';
-import { createDocky, deleteDocky, getDockies, getDocky, updateDocky } from '@/repositories/DockiesRepository';
+import { createDocky, deleteDocky, getDockies, getDocky, getDockySlug, updateDocky } from '@/repositories/DockiesRepository';
 import { NextRequest, NextResponse } from 'next/server';
+import { } from 'slug';
 
 export async function GET(request: NextRequest) {
     //await getSession();
@@ -24,20 +24,24 @@ export async function POST(request: Request) {
         name: dataBody.name,
         description: dataBody.description,
         type: dataBody.type,
+        cat: dataBody.cat,
+        isPublic: dataBody.isPublic,
+        treeId: dataBody.isPublic,
         data: dataBody.data,
     });
 
     // If any form fields are invalid, return early
     if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
+        return new Response(validatedFields.error.message, {
+            status: 400,
+        });
     }
-    const { name, description, type, data } = validatedFields.data;
+    const { name, description, type, cat, isPublic, data, treeId } = validatedFields.data;
+    const slug = await getDockySlug(name);
 
     //TODO check User Rules
 
-    const docky = await createDocky({ name, description, type, data, userId: session?.userId! });
+    const docky = await createDocky({ name, slug, description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
 
     return NextResponse.json(docky);
 }
@@ -51,57 +55,54 @@ export async function PUT(request: Request) {
         id: dataBody.id,
         name: dataBody.name,
         description: dataBody.description,
-        type: dataBody.type,
         data: dataBody.data,
+        isPublic: dataBody.isPublic,
+        treeId: dataBody.treeId,
         children: dataBody.children,
     });
 
     // If any form fields are invalid, return early
     if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
+        return new Response(validatedFields.error.message, {
+            status: 400,
+        })
     }
-    const { id, name, description, type, data, children } = validatedFields.data;
+    const { id, name, description, data, isPublic, treeId, children } = validatedFields.data;
 
     // Check if the owner of parent is the user
 
     const docky = await getDocky(id);
     if (!docky || docky?.userId !== session?.userId) {
-        return {
-            errors: "Invalide rules",
-        }
+        return new Response('Invalid Rules', {
+            status: 400,
+        })
     }
 
-    await updateDocky({ id, userId: session?.userId, name, description, type, data, children: children as DockyFileDataChildren[] })
+    await updateDocky({ id, name, description, data, isPublic, treeId, children: children as DockyFileDataChildren[] })
 
     return NextResponse.json({ status: "succes" });
 }
 
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
 
     const session = await getSession();
 
-    const data = await request.json();
-    const validatedFields = TreePutRequestSchema.safeParse({
-        id: data.id
-    });
 
+    const id = Number(request.nextUrl.searchParams.get("id"));
     // If any form fields are invalid, return early
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
+    if (!id || !Number.isInteger(id)) {
+        return new Response('Invalid parameters', {
+            status: 400,
+        });
     }
-    const { id } = validatedFields.data;
 
     // Check if the owner of parent is the user
     const currentTree = await getDocky(id);
     if (!currentTree || currentTree?.userId !== session?.userId) {
-        return {
-            errors: "Invalide rules",
-        }
+        return new Response('Invalid Rules', {
+            status: 400,
+        })
     }
 
     await deleteDocky(id);

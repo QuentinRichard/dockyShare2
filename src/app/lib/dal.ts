@@ -2,10 +2,10 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { cookies } from 'next/headers';
 import { decrypt } from '@/app/lib/session';
-import { redirect } from 'next/navigation';
 import { findUserByIdentifiant } from '@/repositories/UserRepository';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const verifySession = cache(async () => {
     const cookie = (await cookies()).get('session')?.value
@@ -26,7 +26,7 @@ export const getUser = cache(async () => {
         const data = await findUserByIdentifiant(session.userId.toString())
         return data;
     } catch (error) {
-        console.log('Failed to fetch user')
+        console.log('Failed to fetch user', (error as Error).message)
         return null
     }
 })

@@ -6,7 +6,7 @@ export const getCache = async () => {
     return null;
 };
 
-export const setCache = async (ttl: number = 3600) => {
+export const setCache = async (/*ttl: number = 3600*/) => {
     //QRI  await redis.set(key, JSON.stringify(value), "EX", ttl);
 };
 

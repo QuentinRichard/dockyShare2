@@ -1,6 +1,6 @@
 
+import { Permissions, Rules } from '@/db/schema/rules';
 import { addRule, EnumBasicRules } from '@/repositories/RulesRepository';
-import { Rules, Permissions } from '@/db/schema/rules';
 
 
 export async function seedRules1() {
@@ -11,7 +11,7 @@ export async function seedRules1() {
             { AcceuilPageMng: false, userMng: false }/*Management*/,
             { create: true, delete: true, edit: true, share: false }/*HomePage*/,
             { create: true, delete: true, edit: true, share: false }/*Dock*/,
-            { create: false, delete: false, edit: false, share: false }/*survey*/,
+            { create: false, delete: false, edit: false, share: false }/*Sharing*/,
             { create: false, delete: false, edit: false, share: false }/*Calendar*/,
             { create: false, delete: false, edit: false, share: false }/*Event*/)
     };
@@ -23,7 +23,7 @@ export async function seedRules1() {
             { AcceuilPageMng: false, userMng: false }/*Management*/,
             { create: true, delete: true, edit: true, share: false }/*HomePage*/,
             { create: true, delete: true, edit: true, share: true }/*Dock*/,
-            { create: true, delete: true, edit: true, share: true }/*survey*/,
+            { create: true, delete: true, edit: true, share: true }/*Sharing*/,
             { create: true, delete: true, edit: true, share: true }/*Calendar*/,
             { create: true, delete: true, edit: true, share: true }/*Event*/)
     };
@@ -35,7 +35,7 @@ export async function seedRules1() {
             { AcceuilPageMng: false, userMng: false }/*Management*/,
             { create: true, delete: true, edit: true, share: false }/*HomePage*/,
             { create: true, delete: true, edit: true, share: true }/*Dock*/,
-            { create: true, delete: true, edit: true, share: true }/*survey*/,
+            { create: true, delete: true, edit: true, share: true }/*Sharing*/,
             { create: true, delete: true, edit: true, share: true }/*Calendar*/,
             { create: true, delete: true, edit: true, share: true }/*Event*/)
     };

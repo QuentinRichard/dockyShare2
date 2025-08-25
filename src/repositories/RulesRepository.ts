@@ -41,8 +41,6 @@ export function haveRight(docky: DockyRulesType, action: DockyRulesAction, userP
             return checkBasicRight(action, userPermissions.event);
         case DockyRulesType.Management:
             return checkAdminRight(action, userPermissions.management);
-        case DockyRulesType.Survey:
-            return checkBasicRight(action, userPermissions.survey);
         default:
             return false;
     }

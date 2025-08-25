@@ -1,11 +1,17 @@
 import { useTrees } from '@/app/lib/uses';
-import { IPropertiesTable } from '@/db/schema/property';
-import { DynamicIcon } from 'lucide-react/dynamic';
+import { IPropertiesTable, PropertyTreeType } from '@/db/schema/property';
+import { DynamicIcon, IconName } from 'lucide-react/dynamic';
+import { redirect } from 'next/navigation';
 import { useState } from 'react';
+import CreateModal, { getModalType, ModalProps } from '../Modal/CreateModal';
 
-export default function DashMenu() {
+export interface DashMenuProps {
+    navigation: (dockySlug: string) => void
+}
 
+export default function DashMenu(props: DashMenuProps) {
     const [expendedId, setExpendedId] = useState(0);
+    const [modalProps, setModalProps] = useState({} as ModalProps)
     const { trees, isLoading, isError } = useTrees();
 
     const containsSelected = (item: IPropertiesTable) => {
@@ -21,41 +27,173 @@ export default function DashMenu() {
         }
     }
 
+    const onEditAction = (id: number, _type: PropertyTreeType) => {
+        if (props!.navigation) props!.navigation(id);
+    }
+
+    const onAddDivAction = (id: number, type: PropertyTreeType) => {
+        setModalProps({
+            action: onModalActionResult,
+            open: true,
+            type: 'Div',
+            data: {
+                type,
+                parentId: id
+            },
+            title: 'Ajouter un niveau'
+        });
+    }
+
+    const onAddAction = (_id: number, type: PropertyTreeType) => {
+        setModalProps({
+            action: onModalActionResult,
+            open: true,
+            type: getModalType(type),
+            title: 'Ajouter un élèment'
+        });
+    }
+    const onModalActionResult = (state: boolean) => {
+        setModalProps({ ...modalProps, open: false });
+        if (state)
+            redirect('/dashboard');
+    }
+    const EditTools = (slug: string) => (<DynamicIcon name="file-pen-line" size={44} className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" onClick={() => { onEditAction(slug) }} />);
+    const AddTools = (id: number, type: PropertyTreeType) => (<DynamicIcon name="list-plus" size={44} className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:group-hover:text-white" onClick={() => { onAddAction(id, type) }} />);
+    const AddDivTools = (id: number, type: PropertyTreeType) => (<DynamicIcon name="folder-plus" size={44} className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" onClick={() => { onAddDivAction(id, type) }} />);
+
+    const getMenuItemToolBar = (item: IPropertiesTable) => {
+
+        const getToolsByType = (id: number, type: PropertyTreeType) => {
+            let ret;
+            switch (type) {
+                case PropertyTreeType.Admin:
+                    ret = (<></>);
+                    break;
+                case PropertyTreeType.AdminUser:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.AdminHomePage:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.AdminLibrary:
+                    ret = (<></>);
+                    break;
+                case PropertyTreeType.AdminLibraryDocky:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.AdminLibraryDockyDiv:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.AdminDocky:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.AdminLibraryArticle:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.AdminLibraryArticleDiv:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.AdminArticle:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.Library:
+                    ret = (<></>);
+                    break;
+                case PropertyTreeType.LibraryDocky:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.LibraryDockyDiv:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.Docky:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.LibraryArticle:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.LibraryArticleDiv:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.Article:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.Calendar:
+                    ret = (<></>);
+                    break;
+                case PropertyTreeType.CalendarHistory:
+                    ret = (<></>);
+                    break;
+                case PropertyTreeType.CalendarUpComming:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.CalendarEvent:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                case PropertyTreeType.Events:
+                    ret = (<>{EditTools(id, type)}{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.EventsDiv:
+                    ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                    break;
+                case PropertyTreeType.Event:
+                    ret = (<>EditTools(id, type)</>);
+                    break;
+                default:
+                    throw new Error('PropertyTreeType Type Unknown !!')
+            }
+            return ret;
+        }
+        return (<>
+            {getToolsByType(item.id as number, item.type)}
+            {/* ExpendSubMenu */}
+            {item.children!.length > 0 && item.id === expendedId &&
+                <DynamicIcon name="chevron-down" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
+
+            {item.children!.length > 0 && item.id !== expendedId &&
+                <DynamicIcon name="chevron-right" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
+        </>)
+    }
+
+    const getMenuItem = (item: IPropertiesTable, index: number, run: number) => {
+        return (
+            item.children!.length === 0 ?
+                <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
+                    <div className={`flex justify-between items-center p-${run} w-full text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}>
+                        <div className='flex'>
+                            {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
+                            <span className="ms-3">{item.name}</span>
+                        </div>
+                        <div className='flex'>
+                            {getMenuItemToolBar(item)}
+                        </div>
+                    </div>
+                </li>
+                :
+                <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
+                    <button type="button" className={`flex items-center w-full p-${run}  text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`} aria-controls="dropdown-example" data-collapse-toggle="dropdown-example"
+                        onClick={() => { setExpendedId(item.id! === expendedId ? 0 : item.id!); }}>
+                        {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
+                        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{item.name}</span>
+                        {getMenuItemToolBar(item)}
+
+                    </button>
+                    <ul id="dropdown-example" className={`p-${run + 2} py-2 space-y-2`} hidden={!containsSelected(item)}>
+                        {item.children!.map((child, index2) =>
+                            getMenuItem(child, index2, index + 1)
+                        )}
+                    </ul>
+                </li >
+        );
+    }
+
     return (
-        <div id="sidebar-multi-level-sidebar" className="w-80 h-full border-2 border-black transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar" >
+
+        <div id="sidebar-multi-level-sidebar" className="w-90 h-full border-2 border-black transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar" >
             <div className="h-full px-3 py-4 overflow-y-auto bg-amber-50 dark:bg-gray-800">
                 {trees &&
-                    <ul className="space-y-2 font-medium">
-                        {trees?.map((item: IPropertiesTable) => {
-                            return item.children!.length === 0 ?
-                                <li>
-                                    <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                        {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-                                        <span className="ms-3">{item.name}</span>
-                                    </a>
-                                </li>
-                                :
-                                <li>
-                                    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() => { setExpendedId(item.id! === expendedId ? 0 : item.id!); }}>
-                                        {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-                                        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">E-commerce</span>
-                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                        </svg>
-                                    </button>
-                                    <ul id="dropdown-example" className=" py-2 space-y-2" hidden={!containsSelected(item)}>
-
-                                        {item.children!.map((child) =>
-                                            <li>
-                                                <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                                    {child.icon && child.icon.length > 0 && <DynamicIcon name={child.icon} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-                                                    <span className="ms-3">{child.name}</span>
-                                                </a>
-                                            </li>
-                                        )}
-
-                                    </ul>
-                                </li>
+                    <ul className="font-medium space-y-2"> {/* */}
+                        {trees?.map((item: IPropertiesTable, index: number) => {
+                            return getMenuItem(item, index, 2)
                         }
 
                         )}
@@ -80,6 +218,7 @@ export default function DashMenu() {
                     </div>
                 }
             </div>
+            <CreateModal {...modalProps} />
         </div >
 
 

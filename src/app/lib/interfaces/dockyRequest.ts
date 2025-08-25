@@ -1,4 +1,4 @@
-import { DockyFileTypeEnum } from '@/db/schema/dockies'
+import { DockyFileCatEnum, DockyFileTypeEnum } from '@/db/schema/dockies'
 import { z } from 'zod'
 
 export const DockyRequestSchema = z.object({
@@ -11,14 +11,24 @@ export const DockyRequestSchema = z.object({
         .min(2, { message: 'Name must be at least 2 characters long.' })
         .trim(),
     type: z
-        .enum([DockyFileTypeEnum.HomePage, DockyFileTypeEnum.Docky, DockyFileTypeEnum.Article, DockyFileTypeEnum.App]),
+        .enum([DockyFileTypeEnum.Docky, DockyFileTypeEnum.Article]),
+    cat: z
+        .enum([DockyFileCatEnum.Article_Board, DockyFileCatEnum.Article_MD,
+        DockyFileCatEnum.Article_IMG, DockyFileCatEnum.Article_AUDIO,
+        DockyFileCatEnum.Article_Survey, DockyFileCatEnum.Article_VIDEO,
+        DockyFileCatEnum.Docky_HomePage, DockyFileCatEnum.Docky_Perso
+        ]),
+    isPublic: z
+        .number(),
     data: z
         .looseObject({ id: z.number() }),
     children: z
         .object({
             id: z.number(),
             order: z.number()
-        }).array().optional()
+        }).array().optional(),
+    treeId: z
+        .number(),
 
 })
 
@@ -34,13 +44,15 @@ export const DockyPutRequestSchema = z.object({
         .string()
         .min(2, { message: 'Name must be at least 2 characters long.' })
         .trim(),
-    type: z
-        .enum([DockyFileTypeEnum.HomePage, DockyFileTypeEnum.Docky, DockyFileTypeEnum.Article, DockyFileTypeEnum.App]),
+    isPublic: z
+        .number(),
     data: z
         .looseObject({ id: z.number() }),
     children: z
         .looseObject({
             id: z.number(),
             order: z.number()
-        }).array().optional()
+        }).array().optional(),
+    treeId: z
+        .number(),
 })

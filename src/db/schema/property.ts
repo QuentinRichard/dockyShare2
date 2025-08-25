@@ -4,10 +4,38 @@ import { relations } from "drizzle-orm";
 import type { Column } from "drizzle-orm/column";
 import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
+export enum PropertyTreeType {
+  Admin = 'Admin',
+  AdminUser = 'AdminUser',
+  AdminHomePage = 'AdminHomePage',
+  AdminLibrary = 'AdminLibrary',
+  AdminLibraryDocky = 'AdminLibraryDocky',
+  AdminLibraryDockyDiv = 'AdminLibraryDockyDiv',
+  AdminDocky = 'AdminDocky',
+  AdminLibraryArticle = 'AdminLibraryArticle',
+  AdminLibraryArticleDiv = 'AdminLibraryArticleDiv',
+  AdminArticle = 'AdminArticle',
+  Library = 'Library',
+  LibraryDocky = 'LibraryDocky',
+  LibraryDockyDiv = 'LibraryDockyDiv',
+  Docky = 'Docky',
+  LibraryArticle = 'LibraryArticle',
+  LibraryArticleDiv = 'LibraryArticleDiv',
+  Article = 'Article',
+  Calendar = 'Calendar',
+  CalendarHistory = 'CalendarHistory',
+  CalendarUpComming = 'CalendarUpComming',
+  CalendarEvent = 'CalendarEvent',
+  Events = 'Events',
+  EventsDiv = 'EventsDiv',
+  Event = 'Events',
+}
+
 export interface IPropertiesTable {
   id?: number
   name: string
   icon?: string
+  type: PropertyTreeType
   content: string
   parentId?: number
   children?: IPropertiesTable[]
@@ -26,13 +54,13 @@ export const propertiesTable = pgTable('property', {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   icon: text("icon"),
+  type: text("type"),
   content: text("content"),
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   parentId: integer("parent_id"),
   userId: integer("user_id"),
 });
 
-export const treeRelations = relations(propertiesTable, ({ one, many }) => ({
+export const propertiesRelations = relations(propertiesTable, ({ one, many }) => ({
   parentId: one(propertiesTable, {
     fields: [propertiesTable.parentId],
     references: [propertiesTable.id],

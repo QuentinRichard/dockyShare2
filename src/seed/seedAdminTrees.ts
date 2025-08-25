@@ -1,5 +1,5 @@
 
-import { IPropertiesTable } from '@/db/schema/property';
+import { IPropertiesTable, PropertyTreeType } from '@/db/schema/property';
 import { addTree } from '@/repositories/PropertyRepository';
 
 export async function seedAdminTrees1() {
@@ -7,7 +7,8 @@ export async function seedAdminTrees1() {
         content: '',
         name: 'Blibliothéque',
         userId: 10,
-        icon: 'book-open-check'
+        icon: 'book-open-check',
+        type: PropertyTreeType.Library
     };
     const bibliId = await addTree(blibli);
     console.log(bibliId);
@@ -17,7 +18,8 @@ export async function seedAdminTrees1() {
         name: 'Article',
         userId: 10,
         parentId: bibliId,
-        icon: 'wallpaper'
+        icon: 'wallpaper',
+        type: PropertyTreeType.LibraryArticle
     };
     await addTree(article);
 
@@ -26,18 +28,20 @@ export async function seedAdminTrees1() {
         name: 'Document',
         userId: 10,
         parentId: bibliId,
-        icon: 'scroll-text'
+        icon: 'scroll-text',
+        type: PropertyTreeType.LibraryArticle
     };
     await addTree(docu);
 
-    const survey: IPropertiesTable = {
+    const event: IPropertiesTable = {
         content: '',
-        name: 'Survey',
+        name: 'Event',
         userId: 10,
         parentId: undefined,
-        icon: 'book-open-check'
+        icon: 'scan-eye',
+        type: PropertyTreeType.Events
     };
 
-    await addTree(survey);
+    await addTree(event);
 }
 

@@ -1,7 +1,7 @@
 
 
 export { dockiesChildrenRelations, dockiesChildrenTable, dockiesTable } from './dockies'
-export { propertiesTable, treeRelations } from './property'
+export { propertiesRelations, propertiesTable } from './property'
 export { rulesTable } from './rules'
 export { usersTable } from './user'
 

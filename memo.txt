@@ -1,9 +1,80 @@
 TODO :
 ------
-=> Prise en compte de icon dans propertyTree
+=> Menu ajout des "group" pour gerer l'apparition des menu en fonction des 'types' & droit
+=> i18N
 
 
 
-Done between commit:
+Note
 --------------------
-Rename Rules enum
+Les Dockies [Page, Article] sont gérer dans une table
+Les Event et Calendar sont egalement gérer dans une autre page
+
+
+
+Docky:
+------
+{
+    id?: number
+    name: string
+    description: string
+    type: DockyFileTypeEnum 
+    cat:  DockyFileCatEnum 
+    data: DockyFileData | any
+    userId: number
+    children?: DockyFileDataChildren[]
+
+    publicVisiblity: boolean
+}
+
+DockyFileDefEnum {
+    Docky = 'Docky',
+    Article = 'Article',
+}
+
+DockyFileCatEnum {
+    //Le catégorie d'article
+    Article_MD,
+    Article_Board
+    Article_IMG
+    Article_AUDIO
+    Article_VIDEO
+    Article_Survey
+    //Le catégorie de Docky
+    Docky_HomePage
+    Docky_Perso
+
+}
+
+Tree Properties :
+-----------------
+PropertyTreeType {
+    Admin,
+        AdminUser,
+        AdminHomePage,
+        Library,
+            LibraryDocky,
+                LibraryDockyDiv,
+            LibraryArticle,
+                LibraryArticleDiv,        
+    Library,
+        LibraryDocky,
+            LibraryDockyDiv,
+        LibraryArticle,
+            LibraryArticleDiv,
+    Calendar,
+        CalendarHistory,
+        CalendarUpComming,
+    Event,
+        EventDiv
+}
+
+IPropertiesTable {
+  id?: number
+  name: string
+  icon?: string
+  content: string
+  parentId?: number
+  children?: IPropertiesTable[]
+  userId: number
+}
