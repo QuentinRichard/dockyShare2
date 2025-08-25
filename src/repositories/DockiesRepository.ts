@@ -135,6 +135,8 @@ export async function createDocky(docky: DockyFileData): Promise<number> {
     //     userId: docky.userId,
     // };
 
+    const slug = await getDockySlug(docky.name);
+    docky.slug = slug;
     const id = await dbConnexion.insert(dockiesTable).values(docky).returning({ id: dockiesTable.id });
     return id[0].id;
 }

@@ -1,7 +1,7 @@
 import { DockyPutRequestSchema, DockyRequestSchema } from '@/app/lib/interfaces/dockyRequest';
 import { getSession } from '@/app/lib/session';
 import { DockyFileDataChildren } from '@/db/schema/dockies';
-import { createDocky, deleteDocky, getDockies, getDocky, getDockySlug, updateDocky } from '@/repositories/DockiesRepository';
+import { createDocky, deleteDocky, getDockies, getDocky, updateDocky } from '@/repositories/DockiesRepository';
 import { NextRequest, NextResponse } from 'next/server';
 import { } from 'slug';
 
@@ -37,11 +37,10 @@ export async function POST(request: Request) {
         });
     }
     const { name, description, type, cat, isPublic, data, treeId } = validatedFields.data;
-    const slug = await getDockySlug(name);
 
     //TODO check User Rules
 
-    const docky = await createDocky({ name, slug, description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
+    const docky = await createDocky({ name, description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
 
     return NextResponse.json(docky);
 }

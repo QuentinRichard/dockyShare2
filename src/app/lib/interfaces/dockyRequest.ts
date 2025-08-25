@@ -21,7 +21,7 @@ export const DockyRequestSchema = z.object({
     isPublic: z
         .number(),
     data: z
-        .looseObject({ id: z.number() }),
+        .looseObject({ id: z.number() }).optional(),
     children: z
         .object({
             id: z.number(),

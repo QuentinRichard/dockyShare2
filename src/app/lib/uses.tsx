@@ -44,3 +44,13 @@ export function useDockies() {
   }
 }
 
+
+export function useProperties() {
+  const { data, error, isLoading } = useSWR(`/api/dashboard/trees`, fetcher)
+
+  return {
+    user: data,
+    isLoading,
+    isError: error
+  }
+}

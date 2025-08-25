@@ -40,6 +40,14 @@ export async function getSession() {
 
     return await decrypt(session);
 }
+export async function getRules() {
+    const session = (await cookies()).get('rules')?.value
+
+    if (!session)
+        return null;
+
+    return session;
+}
 
 export async function createSession(user: User, rules?: Rules) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
