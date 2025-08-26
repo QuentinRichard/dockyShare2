@@ -1,4 +1,5 @@
-import { IPropertiesTable, PropertyTreeType } from '@/db/schema/property';
+import { DockyFileCatEnum } from '@/db/schema/dockies';
+import { IPropertiesTable } from '@/db/schema/property';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import { ReactNode } from 'react';
 
@@ -15,13 +16,13 @@ const containsSelected = (item: IPropertiesTable, selected: number) => {
     }
 }
 
-export function buildMenu(trees: IPropertiesTable[], expendedId: number, onClick: unknown, toolBarByTypeCB: (id: number, type: PropertyTreeType) => void) {
+export function buildMenu(trees: IPropertiesTable[], expendedId: number, onClick: (val: number) => void, toolBarByTypeCB: (item: IPropertiesTable) => void) {
 
 
 
     const getMenuItemToolBar = (item: IPropertiesTable) => {
         return (<>
-            {toolBarByTypeCB(item.id as number, item.type)}
+            {toolBarByTypeCB(item)}
             {/* ExpendSubMenu */}
             {item.children!.length > 0 && item.id === expendedId &&
                 <DynamicIcon name="chevron-down" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
@@ -35,7 +36,7 @@ export function buildMenu(trees: IPropertiesTable[], expendedId: number, onClick
         return (
             item.children!.length === 0 ?
                 <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
-                    <div className={`flex justify-between items-center p-${run} w-full text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}>
+                    <div className={`flex justify-between items-center pl-${run} w-full text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}>
                         <div className='flex'>
                             {item.icon && item.icon.length > 0 &&
                                 <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
@@ -48,16 +49,16 @@ export function buildMenu(trees: IPropertiesTable[], expendedId: number, onClick
                 </li>
                 :
                 <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
-                    <button type="button" className={`flex items-center w-full p-${run}  text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`} aria-controls="dropdown-example" data-collapse-toggle="dropdown-example"
+                    <button type="button" className={`flex items-center w-full pl-${run}  text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`} aria-controls="dropdown-example" data-collapse-toggle="dropdown-example"
                         onClick={() => { onClick(item.id! === expendedId ? 0 : item.id!); }}>
                         {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
                         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{item.name}</span>
                         {getMenuItemToolBar(item)}
 
                     </button>
-                    <ul id="dropdown-example" className={`p-${run + 2} py-2 space-y-2`} hidden={!containsSelected(item, expendedId)}>
+                    <ul id="dropdown-example" className={`pl-${run + 2} py-2 space-y-2`} hidden={!containsSelected(item, expendedId)}>
                         {item.children!.map((child, index2) =>
-                            getMenuItem(child, index2, index + 1)
+                            getMenuItem(child, index2, run + index2 + index + 2)
                         )}
                     </ul>
                 </li >
@@ -75,13 +76,32 @@ export function buildOptionSelection(trees: IPropertiesTable[]): ReactNode {
     const output: unknown = [];
     const getMenuItem = (item: IPropertiesTable, run: number, output: []) => {
 
-        output.push((<option key={`treeDestSelection_${item.id}`} value={item.id} className={`p-${2 + 2 * run}`}>{item.name}</option>) as never)
+        output.push((<option key={`treeDestSelection_${item.id}`} value={item.id} className={`pl-${2 + 2 * run}`}>{item.name}</option>) as never)
         item.children?.forEach((child) => {
             return getMenuItem(child, run + 1, output)
         })
     };
     trees?.forEach((item) => {
         getMenuItem(item, 0, output as [])
+    });
+    return output as unknown as ReactNode;
+}
+
+
+
+
+export function buildOptionSelectionforArticleCat(): ReactNode {
+    const cat = [
+        { name: "Un fichier Mardown", id: DockyFileCatEnum.Article_MD },
+        { name: "Tableau de dessin", id: DockyFileCatEnum.Article_Board },
+        { name: "Une Image", id: DockyFileCatEnum.Article_IMG },
+        { name: "Un fichier Audio", id: DockyFileCatEnum.Article_AUDIO },
+        { name: "Un fichier Vidéo", id: DockyFileCatEnum.Article_VIDEO },
+        { name: "Un questionnaire", id: DockyFileCatEnum.Article_Survey }
+    ]
+    const output: unknown[] = [];
+    cat.forEach((item, index) => {
+        output.push((<option key={`arcitcleCat_${index}`} value={item.id} className="pl-2">{item.name}</option>) as unknown)
     });
     return output as unknown as ReactNode;
 }

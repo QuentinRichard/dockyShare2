@@ -40,7 +40,7 @@ export interface DockyFileDataChildren {
 export interface DockyFileData {
     id?: number
     name: string
-    slug?: string
+    slug: string
     description: string
     /* eslint-disable @typescript-eslint/no-explicit-any */
     type: DockyFileTypeEnum | string | any

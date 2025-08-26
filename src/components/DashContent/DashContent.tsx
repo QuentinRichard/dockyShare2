@@ -1,7 +1,11 @@
 'use client'
 
+export interface DashContentProps {
+    slug: string
+}
 
-export default function DashContent() {
+export default function DashContent(props: DashContentProps) {
+    console.log(props);
     return (
         <div className="border-gray-400 border-2 w-full shrink">
 

@@ -59,7 +59,7 @@ export async function getTrees(userId: number): Promise<IPropertiesTable[]> {
 export async function getTree(treeId: number): Promise<IPropertiesTable | undefined> {
   try {
     const result = await dbConnexion.query.propertiesTable.findFirst({
-      where: eq(propertiesTable.userId, treeId),
+      where: eq(propertiesTable.id, treeId),
       columns: {
         id: true,
         name: true,

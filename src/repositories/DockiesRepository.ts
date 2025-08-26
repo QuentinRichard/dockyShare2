@@ -1,5 +1,5 @@
 import dbConnexion from '@/db/connexion';
-import { DockyFileChildren, DockyFileData, DockyFileTypeEnum, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
+import { DockyFileChildren, DockyFileData, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
 import { and, eq, like } from 'drizzle-orm';
 import { generateSlug } from "random-word-slugs";
 import slug from 'slug';
@@ -7,6 +7,7 @@ import slug from 'slug';
 
 export async function getDockySlug(name: string) {
     const nameSlug = slug(name);
+    let nameSlugFinal = slug(name);
     const test1 = await dbConnexion
         .select()
         .from(dockiesTable)
@@ -16,15 +17,16 @@ export async function getDockySlug(name: string) {
             .select()
             .from(dockiesTable)
             .where(like(dockiesTable.slug, nameSlug));
+        nameSlugFinal = `${nameSlug}${count.length}`;
         const test2 = await dbConnexion
             .select()
             .from(dockiesTable)
-            .where(eq(dockiesTable.slug, `${nameSlug}${count}`));
+            .where(eq(dockiesTable.slug, nameSlugFinal));
         if (test2.length) {
             return generateSlug();
         }
     }
-    return nameSlug;
+    return nameSlugFinal;
 
 }
 
@@ -60,7 +62,7 @@ export async function getDockies(userId: number, type?: string | null): Promise<
         const ret: DockyFileData[] = [];
         [...map.values()]
             .forEach((item: DockyFileData) => {
-                if (item.type === DockyFileTypeEnum.Docky)
+                if (item.type === type)
                     ret.push(item);
             });
 

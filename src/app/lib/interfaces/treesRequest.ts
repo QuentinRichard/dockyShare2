@@ -8,7 +8,7 @@ export const TreeRequestSchema = z.object({
         .trim(),
     content: z
         .string()
-        .min(2, { message: 'Name must be at least 2 characters long.' })
+        .min(0, { message: 'Name must be at least 2 characters long.' })
         .trim(),
     type: z
         .enum([PropertyTreeType.Admin,

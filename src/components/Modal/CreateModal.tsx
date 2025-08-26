@@ -2,9 +2,9 @@
 
 import { PropertyTreeType } from "@/db/schema/property";
 import { useRef } from "react";
-import CreateArticleForm from "../Forms/CreateArticle";
-import CreateDivForm from "../Forms/CreateDiv";
-import CreateDockyForm from "../Forms/CreateDocky";
+import CreateArticleForm, { ArticleDataForm } from "../Forms/CreateArticle";
+import CreateDivForm, { DivDataForm } from "../Forms/CreateDiv";
+import CreateDockyForm, { DockyDataForm } from "../Forms/CreateDocky";
 import CreateEventForm from "../Forms/CreateEvent";
 
 export interface ModalProps {
@@ -13,7 +13,7 @@ export interface ModalProps {
     type: 'Docky' | 'Article' | 'Div' | 'Event'
     open: boolean
     data?: unknown
-    action: (data: unknown) => {}
+    action: (data: boolean, msg: string) => void
 }
 
 export function getModalType(type: PropertyTreeType) {
@@ -48,21 +48,26 @@ export function getModalType(type: PropertyTreeType) {
     }
 }
 
+interface DialogInterface {
+    open: () => void
+    close: () => void
+}
+
 export default function CreateModal(props: ModalProps) {
     const modalDialogRef = useRef(null);
     // const onOpen = () => {
-    //     debugger;
+
     //     if (modalDialogRef.current!.open)
     //         modalDialogRef.current!.close();
     //     else
     //         modalDialogRef.current!.showModal();
     // }
 
-    const onAction = (result: boolean) => {
-        props.action(result);
+    const onAction = (result: boolean, msg: string) => {
+        props.action(result, msg);
 
-        if (modalDialogRef.current!.open)
-            modalDialogRef.current!.close();
+        if ((modalDialogRef.current! as DialogInterface).open)
+            (modalDialogRef.current! as DialogInterface).close();
     }
 
     return (
@@ -71,7 +76,7 @@ export default function CreateModal(props: ModalProps) {
             className="fixed inset-0 size-auto  h-screen w-screen max-h-none max-w-none overflow-y-auto bg-amber-50/75 backdrop:bg-amber-50/75">
             {/* <el-dialog-backdrop className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop> */}
 
-            <div tabIndex="0" className="flex flex-col min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+            <div tabIndex={0} className="flex flex-col min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
                 {/* <el-dialog-panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"> */}
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
@@ -81,9 +86,9 @@ export default function CreateModal(props: ModalProps) {
                                 </svg>
                             </div> */}
                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            {props.type === 'Docky' && <CreateDockyForm action={onAction} data={props.data} />}
-                            {props.type === 'Article' && <CreateArticleForm action={onAction} data={props.data} />}
-                            {props.type === 'Div' && <CreateDivForm action={onAction} />}
+                            {props.type === 'Docky' && <CreateDockyForm action={onAction} data={props.data as DockyDataForm} />}
+                            {props.type === 'Article' && <CreateArticleForm action={onAction} data={props.data as ArticleDataForm} />}
+                            {props.type === 'Div' && <CreateDivForm action={onAction} data={props.data as DivDataForm} />}
                             {props.type === 'Event' && <CreateEventForm action={onAction} />}
                         </div>
                     </div>

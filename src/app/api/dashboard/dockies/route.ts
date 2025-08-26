@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         type: dataBody.type,
         cat: dataBody.cat,
         isPublic: dataBody.isPublic,
-        treeId: dataBody.isPublic,
+        treeId: dataBody.treeId,
         data: dataBody.data,
     });
 
@@ -39,10 +39,12 @@ export async function POST(request: Request) {
     const { name, description, type, cat, isPublic, data, treeId } = validatedFields.data;
 
     //TODO check User Rules
+    const newOne = await createDocky({ name, slug: 'fake', description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
 
-    const docky = await createDocky({ name, description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
 
-    return NextResponse.json(docky);
+    const result = await getDockies(session?.userId, type);
+
+    return NextResponse.json({ data: result, new: newOne });
 }
 
 export async function PUT(request: Request) {

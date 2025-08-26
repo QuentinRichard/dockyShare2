@@ -1,27 +1,47 @@
-import { createDockyAction } from "@/app/actions/docky";
-import { DockyFileCatEnum, DockyFileTypeEnum } from "@/db/schema/dockies";
+import { useDockyShareContext } from "@/app/dashboard/context";
+import { callDockiesPost } from "@/app/lib/uses";
+import { DockyFileCatEnum, DockyFileData, DockyFileTypeEnum } from "@/db/schema/dockies";
 import { IPropertiesTable } from "@/db/schema/property";
 import { buildOptionSelection } from "../DashMenu/menuBuilder";
 
+
+export interface DockyDataForm {
+    trees: IPropertiesTable[],
+    id: number
+}
+
 export interface DockyFormProps {
     action: (state: boolean) => void
-    data: {
-        trees: IPropertiesTable[],
-        id: number
-    }
+    data: DockyDataForm
 }
 
 
 
 export default function CreateDockyForm(props: DockyFormProps) {
+    const { setDockies } = useDockyShareContext();
+
+
     const onAction = async (formData: FormData) => {
         //Send request
         formData.set('type', DockyFileTypeEnum.Docky)
         formData.set('cat', DockyFileCatEnum.Docky_Perso)
-        await createDockyAction(formData);
-
-        // Valide action
-        props.action(true);
+        //await createDockyAction(formData);
+        const docky: DockyFileData = {
+            name: formData.get('name') as string,
+            description: formData.get('description') as string,
+            isPublic: formData.get('is_public') ? 1 : 0,
+            treeId: Number(formData.get('tree_id')),
+            type: DockyFileTypeEnum.Docky,
+            cat: DockyFileCatEnum.Docky_Perso
+        }
+        const dockies = await callDockiesPost(docky);
+        if (dockies) {
+            setDockies(dockies.data);
+            const found = dockies.data.find((dockyRes) => dockyRes.id === dockies.new)
+            props.action(true, `Le slug du nouveau document est: ${found.slug}`);
+            return;
+        }
+        props.action(false, "Error Unknown");
     }
 
     return (
@@ -44,18 +64,18 @@ export default function CreateDockyForm(props: DockyFormProps) {
                                 <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Is Public</label>
                             </div>
                             <div className=" items-center justify-between">
-                                <label htmlFor="years" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an destination</label>
-                                <select id="years" size="4" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                <label htmlFor="tree_id" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an destination</label>
+                                <select id="tree_id" size={4} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     defaultValue={props.data.id} name="tree_id">
-                                    {buildOptionSelection(props.data.trees, props.data.id)}
+                                    {buildOptionSelection(props.data.trees)}
                                 </select>
                             </div>
 
                             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                <button type="submit" command="close" commandfor="dialog" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                    onClick={() => onAction}>Ok</button>
-                                <button type="button" command="close" commandfor="dialog" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                    onClick={() => { props.action(false) }}>Cancel</button>
+                                <button type="submit" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                    onClick={() => onAction}>Ok</button>{/* command="close" commandfor="dialog"  */}
+                                <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                    onClick={() => { props.action(false) }}>Cancel</button>{/* command="close" commandfor="dialog"  */}
                             </div>
                         </form>
                     </div>

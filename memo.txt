@@ -1,6 +1,7 @@
 TODO :
 ------
-=> Menu ajout des "group" pour gerer l'apparition des menu en fonction des 'types' & droit
+=> Tree ajouter des icons optionnal
+=> Ajout de Rect-modal, react-simple-tree-menu
 => i18N
 
 

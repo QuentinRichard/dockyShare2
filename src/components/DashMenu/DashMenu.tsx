@@ -1,8 +1,9 @@
-import { useTrees } from '@/app/lib/uses';
+import { useDockyShareContext } from '@/app/dashboard/context';
 import { IPropertiesTable, PropertyTreeType } from '@/db/schema/property';
 import { DynamicIcon } from 'lucide-react/dynamic';
-import { redirect } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import CreateModal, { getModalType, ModalProps } from '../Modal/CreateModal';
 import { buildMenu } from './menuBuilder';
 
@@ -13,23 +14,11 @@ export interface DashMenuProps {
 export default function DashMenu(props: DashMenuProps) {
     const [expendedId, setExpendedId] = useState(0);
     const [modalProps, setModalProps] = useState({} as ModalProps)
-    const { trees, isLoading, isError } = useTrees();
+    const { trees } = useDockyShareContext();
 
-    const containsSelected = (item: IPropertiesTable) => {
-        if (item.id === expendedId)
-            return true
-        else {
-            let ret = false;
-            item.children?.forEach(child => {
-                if (containsSelected(child))
-                    ret = true;
-            });
-            return ret;
-        }
-    }
 
-    const onEditAction = (id: number, _type: PropertyTreeType) => {
-        if (props!.navigation) props!.navigation(id);
+    const onEditAction = (slug: string) => {
+        props!.navigation(slug);
     }
 
     const onAddDivAction = (id: number, type: PropertyTreeType) => {
@@ -47,7 +36,6 @@ export default function DashMenu(props: DashMenuProps) {
     }
 
     const onAddAction = (id: number, typep: PropertyTreeType) => {
-        debugger;
         const type = getModalType(typep);
         setModalProps({
             action: onModalActionResult,
@@ -60,11 +48,15 @@ export default function DashMenu(props: DashMenuProps) {
             title: 'Ajouter un élèment'
         });
     }
-    const onModalActionResult = (state: boolean) => {
+
+    const onModalActionResult = (state: boolean, msg: string) => {
         setModalProps({ ...modalProps, open: false });
         if (state)
-            redirect('/dashboard');
+            toast.success(msg);
+        else
+            toast.error(msg);
     }
+
     const EditTools = (slug: string) => (<DynamicIcon name="file-pen-line" size={44}
         className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
         onClick={() => { onEditAction(slug) }} />);
@@ -75,61 +67,60 @@ export default function DashMenu(props: DashMenuProps) {
         className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
         onClick={() => { onAddDivAction(id, type) }} />);
 
-    // const getMenuItemToolBar = (item: IPropertiesTable) => {
-
-    const getToolsByType = (id: number, type: PropertyTreeType) => {
+    //TODO slug must be manage when the docky have to link to tree .... => EditTools(item.id!.toString())
+    const getToolsByType = (item: IPropertiesTable) => {
         let ret;
-        switch (type) {
+        switch (item.type) {
             case PropertyTreeType.Admin:
                 ret = (<></>);
                 break;
             case PropertyTreeType.AdminUser:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.AdminHomePage:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.AdminLibrary:
                 ret = (<></>);
                 break;
             case PropertyTreeType.AdminLibraryDocky:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.AdminLibraryDockyDiv:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.AdminDocky:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.AdminLibraryArticle:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.AdminLibraryArticleDiv:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.AdminArticle:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.Library:
                 ret = (<></>);
                 break;
             case PropertyTreeType.LibraryDocky:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.LibraryDockyDiv:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.Docky:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.LibraryArticle:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.LibraryArticleDiv:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.Article:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.Calendar:
                 ret = (<></>);
@@ -138,67 +129,25 @@ export default function DashMenu(props: DashMenuProps) {
                 ret = (<></>);
                 break;
             case PropertyTreeType.CalendarUpComming:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.CalendarEvent:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             case PropertyTreeType.Events:
-                ret = (<>{EditTools(id, type)}{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{EditTools(item.id!.toString())}{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.EventsDiv:
-                ret = (<>{AddTools(id, type)}{AddDivTools(id, type)}</>);
+                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
                 break;
             case PropertyTreeType.Event:
-                ret = (<>EditTools(id, type)</>);
+                ret = (<>EditTools(item.id!.toString())</>);
                 break;
             default:
                 throw new Error('PropertyTreeType Type Unknown !!')
         }
         return ret;
     }
-    //     return (<>
-    //         {getToolsByType(item.id as number, item.type)}
-    //         {/* ExpendSubMenu */}
-    //         {item.children!.length > 0 && item.id === expendedId &&
-    //             <DynamicIcon name="chevron-down" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-
-    //         {item.children!.length > 0 && item.id !== expendedId &&
-    //             <DynamicIcon name="chevron-right" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-    //     </>)
-    // }
-
-    // const getMenuItem = (item: IPropertiesTable, index: number, run: number) => {
-    //     return (
-    //         item.children!.length === 0 ?
-    //             <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
-    //                 <div className={`flex justify-between items-center p-${run} w-full text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}>
-    //                     <div className='flex'>
-    //                         {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-    //                         <span className="ms-3">{item.name}</span>
-    //                     </div>
-    //                     <div className='flex'>
-    //                         {getMenuItemToolBar(item)}
-    //                     </div>
-    //                 </div>
-    //             </li>
-    //             :
-    //             <li key={`menu_li-${run.toString().repeat(run)}-${index}`}>
-    //                 <button type="button" className={`flex items-center w-full p-${run}  text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`} aria-controls="dropdown-example" data-collapse-toggle="dropdown-example"
-    //                     onClick={() => { setExpendedId(item.id! === expendedId ? 0 : item.id!); }}>
-    //                     {item.icon && item.icon.length > 0 && <DynamicIcon name={item.icon as IconName} size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-    //                     <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{item.name}</span>
-    //                     {getMenuItemToolBar(item)}
-
-    //                 </button>
-    //                 <ul id="dropdown-example" className={`p-${run + 2} py-2 space-y-2`} hidden={!containsSelected(item)}>
-    //                     {item.children!.map((child, index2) =>
-    //                         getMenuItem(child, index2, index + 1)
-    //                     )}
-    //                 </ul>
-    //             </li >
-    //     );
-    // }
 
     return (
 
@@ -214,7 +163,7 @@ export default function DashMenu(props: DashMenuProps) {
                         }
                     </ul >
                 }
-                {(isLoading && !isError) &&
+                {(trees.length === 0) &&
                     <div>
                         <div role="status">
                             <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -225,13 +174,13 @@ export default function DashMenu(props: DashMenuProps) {
                         </div>
                     </div>
                 }
-                {(isError) &&
+                {/* {(treesSwr.isError) &&
                     <div>
                         <div role="status">
-                            <span className="sr-only">Error : {JSON.stringify(isError)}</span>
+                            <span className="sr-only">Error : {JSON.stringify(treesSwr.isError)}</span>
                         </div>
                     </div>
-                }
+                } */}
             </div>
             <CreateModal {...modalProps} />
         </div >

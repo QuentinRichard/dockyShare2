@@ -28,7 +28,7 @@ export enum PropertyTreeType {
   CalendarEvent = 'CalendarEvent',
   Events = 'Events',
   EventsDiv = 'EventsDiv',
-  Event = 'Events',
+  Event = 'Event',
 }
 
 export interface IPropertiesTable {

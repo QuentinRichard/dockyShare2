@@ -31,6 +31,7 @@ export async function createDockyAction(formData: FormData) {
 
     await createDocky({
         name,
+        slug: 'fake',
         description,
         isPublic,
         type,

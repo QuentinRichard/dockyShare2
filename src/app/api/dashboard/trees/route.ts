@@ -32,13 +32,12 @@ export async function POST(request: Request) {
     }
     const { name, content, type, parentId } = validatedFields.data;
 
-    // Check if the owner of parent is the user
-    const parentTree = await getTree(parentId);
-    if (!parentTree || parentTree?.userId !== session?.userId) {
-        return new Response("Invalide rules", {
-            status: 400,
-        });
-    }
+    //TODO Check if the owner of parent is the user
+    // if (!parentTree || parentTree?.userId !== session?.userId) {
+    //     return new Response("Invalide rules", {
+    //         status: 400,
+    //     });
+    // }
 
     const prop: IPropertiesTable = {
         name,
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
     }
     const id = await addTree(prop);
 
-    return NextResponse.json(id);
+    return NextResponse.json({ data: await getSortedTreesList(session?.userId), new: id });
 }
 
 export async function PUT(request: Request) {

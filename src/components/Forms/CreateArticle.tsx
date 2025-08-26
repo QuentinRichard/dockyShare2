@@ -1,27 +1,46 @@
-import { createDockyAction } from "@/app/actions/docky";
-import { DockyFileCatEnum, DockyFileTypeEnum } from "@/db/schema/dockies";
+import { useDockyShareContext } from "@/app/dashboard/context";
+import { callDockiesPost } from "@/app/lib/uses";
+import { DockyFileData, DockyFileTypeEnum } from "@/db/schema/dockies";
 import { IPropertiesTable } from "@/db/schema/property";
-import { buildOptionSelection } from "../DashMenu/menuBuilder";
+import { buildOptionSelection, buildOptionSelectionforArticleCat } from "../DashMenu/menuBuilder";
+
+export interface ArticleDataForm {
+    trees: IPropertiesTable[],
+    id: number
+}
 
 export interface ArticleFormProps {
     action: (state: boolean) => void
-    data: {
-        trees: IPropertiesTable[],
-        id: number
-    }
+    data: ArticleDataForm
 }
 
 
 export default function CreateArticleForm(props: ArticleFormProps) {
+    const { setArticles } = useDockyShareContext();
     const onAction = async (formData: FormData) => {
-        //Send request
-        formData.set('type', DockyFileTypeEnum.Docky)
-        formData.set('cat', DockyFileCatEnum.Docky_Perso)
-        await createDockyAction(formData);
 
-        // Valide action
-        props.action(true);
+        const article: DockyFileData = {
+            name: formData.get('name') as string,
+            description: formData.get('description') as string,
+            isPublic: formData.get('is_public') ? 1 : 0,
+            treeId: Number(formData.get('tree_id')),
+            type: DockyFileTypeEnum.Article,
+            cat: formData.get('cat')
+        }
+        try {
+            const articles = await callDockiesPost(article);
+            if (articles) {
+                setArticles(articles.data);
+                const found = articles.data!.find((art: DockyFileData) => art.id === articles.new)
+                props.action(true, `Le slug du nouveau article est: ${found.slug}`);
+                return;
+            }
+            props.action(false, "Error Unknown");
+        } catch (e) {
+            props.action(false, `Error Unknown ${e.message}`);
+        }
     }
+
     return (
 
         < div >
@@ -43,18 +62,25 @@ export default function CreateArticleForm(props: ArticleFormProps) {
                                 <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Is Public</label>
                             </div>
                             <div className=" items-center justify-between">
-                                <label htmlFor="years" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an destination</label>
-                                <select id="years" size="4" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                <label htmlFor="cat" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a category</label>
+                                <select id="cat" size={4} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    defaultValue={'MarkDown'} name="cat">
+                                    {buildOptionSelectionforArticleCat()}
+                                </select>
+                            </div>
+                            <div className=" items-center justify-between">
+                                <label htmlFor="tree_id" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a destination</label>
+                                <select id="tree_id" size={4} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     defaultValue={props.data.id} name="tree_id">
-                                    {buildOptionSelection(props.data.trees, props.data.id)}
+                                    {buildOptionSelection(props.data.trees)}
                                 </select>
                             </div>
 
                             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                <button type="submit" command="close" commandfor="dialog" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                    onClick={() => onAction}>Ok</button>
-                                <button type="button" command="close" commandfor="dialog" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                    onClick={() => { props.action(false) }}>Cancel</button>
+                                <button type="submit" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                    onClick={() => onAction}>Ok</button> {/* command="close" commandfor="dialog"  */}
+                                <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                    onClick={() => { props.action(false) }}>Cancel</button> {/* command="close" commandfor="dialog"  */}
                             </div>
                         </form>
                     </div>

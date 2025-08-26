@@ -1,34 +1,35 @@
 "use client"
 import DashContent from '@/components/DashContent/DashContent';
 import DashMenu from '@/components/DashMenu/DashMenu';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { useTrees } from '../lib/uses';
+import { useDockyShareContext } from './context';
 
 
 
 export default function Dashboard() {
-    const [treeData] = useState([]);
+    const [slugNavigation, setSlugNavigation] = useState("");
+    const [isSet, setIsSet] = useState(false);
+    const { setTrees } = useDockyShareContext();
+    const treesSwr = useTrees();
+    if (treesSwr.data && treesSwr.data.length > 0 && !isSet) {
+        setTimeout(() => {
+            setIsSet(true);
+            setTrees(treesSwr.data)
+        }, 0)
 
-    useEffect(() => {
-        // (async function () {
-        //     try {
-        //         const data = await fetch(`/api/dashboard/tree`, {
-        //             method: "GET",
-        //         })
-        //         if (data.ok) {
-        //             const treeData = await data.json();
-        //             setTreeData(treeData);
-        //         }
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        // })();
-    }, [treeData])
+    }
 
+
+    const onMenuNavigate = (slug: string) => {
+        setSlugNavigation(slug);
+    }
 
     return (
-        <div className="w-full h-full flex align-top text-left border-gray-400 border-2">
+        <div className="w-full h-full flex align-top text-left border-gray-400 border-2" id='dashboard'>
 
-            <DashMenu />
+            <DashMenu navigation={onMenuNavigate} />
 
 
             {/* Barre de resize */}
@@ -45,17 +46,17 @@ export default function Dashboard() {
                 }}>
             </div>
 
-            <DashContent />
+            <DashContent slug={slugNavigation} />
 
-            {/* <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-                <AdminTree data={treeData} />
-            </aside>
 
-            <div className="p-4 sm:ml-64">
-                <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-
-                </div>
-            </div> */}
+            <ToastContainer position="bottom-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+            />
         </div>
     );
 }

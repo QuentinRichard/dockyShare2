@@ -9,7 +9,8 @@ export async function seedDocky1() {
         userId: 10,
         description: "HomePage desc",
         data: {},
-        type: DockyFileTypeEnum.HomePage,
+        type: DockyFileTypeEnum.Docky,
+        cat: DockyFileCatEnum.Docky_HomePage,
         isPublic: 1,
         treeId: 30,
         children: undefined
