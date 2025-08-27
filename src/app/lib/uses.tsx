@@ -43,7 +43,7 @@ export const fetcherPost = (payload: any) => {
 const fetcher = (uri: string) => fetch(uri).then((res) => res.json());
 
 export function useTrees() {
-  const { data, error, isLoading } = useSWR(`/api/dashboard/trees`, fetcher)
+  const { data, error, isLoading } = useSWR(`/api/dashboard/trees?type=FullTree`, fetcher)
 
   return {
     data,
@@ -72,7 +72,7 @@ export function callDockiesPost(payload: DockyFileData) {
     },
   }
   //TODO Improve by managing error and provide error message
-  return fetch(`/api/dashboard/dockies`, options).then((res) => res.json());
+  return fetch(`/api/dashboard/tree?type=FullTree`, options).then((res) => res.json());
 }
 
 export function callDivPost(payload: IPropertiesTable) {
@@ -90,12 +90,12 @@ export function callDivPost(payload: IPropertiesTable) {
 }
 
 
-export function useProperties() {
-  const { data, error, isLoading } = useSWR(`/api/dashboard/trees`, fetcher)
+// export function useProperties() {
+//   const { data, error, isLoading } = useSWR(`/api/dashboard/trees`, fetcher)
 
-  return {
-    data,
-    isLoading,
-    isError: error
-  }
-}
+//   return {
+//     data,
+//     isLoading,
+//     isError: error
+//   }
+// }

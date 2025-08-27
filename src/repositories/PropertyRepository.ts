@@ -5,9 +5,9 @@ import { console } from 'inspector';
 
 
 
-export async function sortTrees(trees: IPropertiesTable[]): Promise<IPropertiesTable[]> {
+export async function sortTrees(trees: IPropertiesTable[]): Promise<{ flat: Map<number, IPropertiesTable>, sorted: IPropertiesTable[] }> {
 
-  const map = new Map();
+  const map = new Map<number, IPropertiesTable>();
   const roots: IPropertiesTable[] = [];
 
   // Préparer une entrée pour chaque noeud
@@ -29,7 +29,7 @@ export async function sortTrees(trees: IPropertiesTable[]): Promise<IPropertiesT
     }
   });
 
-  return roots;
+  return { flat: map, sorted: roots };
 }
 
 export async function getTrees(userId: number): Promise<IPropertiesTable[]> {

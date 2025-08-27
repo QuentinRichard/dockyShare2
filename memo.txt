@@ -1,7 +1,7 @@
 TODO :
 ------
-=> Tree ajouter des icons optionnal
-=> Ajout de Rect-modal, react-simple-tree-menu
+=> Tree ajouter des icons lors de la creation optionnal
+=> Ajout de Rect-modal, react-markdown
 => i18N
 
 

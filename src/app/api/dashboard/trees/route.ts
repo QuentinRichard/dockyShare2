@@ -1,15 +1,38 @@
 import { TreePutRequestSchema, TreeRequestSchema } from '@/app/lib/interfaces/treesRequest';
 import { getSession } from '@/app/lib/session';
+import { DockyFileTypeEnum } from '@/db/schema/dockies';
 import { IPropertiesTable } from '@/db/schema/property';
 import { addTree, getSortedTreesList, getTree, updateTree } from '@/repositories/PropertyRepository';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { addDockyToTrees } from './utils';
 
-export async function GET() {
-    await getSession();
+export async function GET(request: NextRequest) {
+    const session = await getSession();
 
-    const ret = await getSortedTreesList(10);
+    const type = request.nextUrl.searchParams.get("type")
+    console.log(type);
+    /**
+     * Tree type :
+     * 1 : Tree : TreeWithout doky
+     * 2 : FullTree: Tree With all doky Items
+     * 3 : Doky : Tree with doky only 
+     * 4 : Article : Tree with article only
+     * 5 : ..... Like Event
+     */
 
-    return NextResponse.json(ret);
+    // Process the response with type
+    const trees = await getSortedTreesList(session?.userId!);
+    if (type == 'FullTree') {
+        await addDockyToTrees(session?.userId!, trees.flat);
+    }
+    else if (type == 'Docky') {
+        await addDockyToTrees(session?.userId!, trees.flat, DockyFileTypeEnum.Docky);
+    }
+    else if (type == 'Article') {
+        await addDockyToTrees(session?.userId!, trees.flat, DockyFileTypeEnum.Article);
+    }
+    //Type=Tree by default
+    return NextResponse.json(trees.sorted);
 }
 
 export async function POST(request: Request) {
@@ -48,7 +71,7 @@ export async function POST(request: Request) {
     }
     const id = await addTree(prop);
 
-    return NextResponse.json({ data: await getSortedTreesList(session?.userId), new: id });
+    return NextResponse.json({ data: (await getSortedTreesList(session?.userId)).sorted, new: id });
 }
 
 export async function PUT(request: Request) {

@@ -44,7 +44,7 @@ export function getModalType(type: PropertyTreeType) {
             return 'Article';
             break;
         default:
-            throw new Error('PropertyTreeType for Modal case Unknown !!')
+            throw new Error(`PropertyTreeType for Modal case Unknown !! ${type}`)
     }
 }
 

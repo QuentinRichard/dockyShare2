@@ -1,5 +1,5 @@
 import dbConnexion from '@/db/connexion';
-import { DockyFileChildren, DockyFileData, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
+import { DockyFileChildren, DockyFileData, DockyFileTypeEnum, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
 import { and, eq, like } from 'drizzle-orm';
 import { generateSlug } from "random-word-slugs";
 import slug from 'slug';
@@ -30,7 +30,7 @@ export async function getDockySlug(name: string) {
 
 }
 
-export async function getDockies(userId: number, type?: string | null): Promise<DockyFileData[]> {
+export async function getDockies(userId: number, type?: DockyFileTypeEnum | null): Promise<DockyFileData[]> {
     try {
         const rows = await dbConnexion
             .select()
@@ -62,7 +62,7 @@ export async function getDockies(userId: number, type?: string | null): Promise<
         const ret: DockyFileData[] = [];
         [...map.values()]
             .forEach((item: DockyFileData) => {
-                if (item.type === type)
+                if (!type || item.type === type)
                     ret.push(item);
             });
 

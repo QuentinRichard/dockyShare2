@@ -1,6 +1,6 @@
 import { DockyPutRequestSchema, DockyRequestSchema } from '@/app/lib/interfaces/dockyRequest';
 import { getSession } from '@/app/lib/session';
-import { DockyFileDataChildren } from '@/db/schema/dockies';
+import { DockyFileDataChildren, DockyFileTypeEnum } from '@/db/schema/dockies';
 import { createDocky, deleteDocky, getDockies, getDocky, updateDocky } from '@/repositories/DockiesRepository';
 import { NextRequest, NextResponse } from 'next/server';
 import { } from 'slug';
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
     const type = request.nextUrl.searchParams.get("type")
     console.log(type);
-    const ret = await getDockies(10, type);
+    const ret = await getDockies(10, type === "Docky" ? DockyFileTypeEnum.Docky : DockyFileTypeEnum.Article);
 
     return NextResponse.json(ret);
 }
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     const newOne = await createDocky({ name, slug: 'fake', description, type, cat, data, isPublic, userId: session?.userId as number, treeId });
 
 
-    const result = await getDockies(session?.userId, type);
+    const result = await getDockies(session?.userId as number, type);
 
     return NextResponse.json({ data: result, new: newOne });
 }

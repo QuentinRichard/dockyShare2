@@ -7,7 +7,7 @@ export interface DashContentProps {
 export default function DashContent(props: DashContentProps) {
     console.log(props);
     return (
-        <div className="border-gray-400 border-2 w-full shrink">
+        <div className="border-gray-400 border-2 h-full w-full shrink">
 
             {/* <div className="p-4 sm:ml-64">
                     <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">

@@ -39,7 +39,7 @@ export interface IPropertiesTable {
   content: string
   parentId?: number
   children?: IPropertiesTable[]
-  userId: number
+  userId?: number
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
