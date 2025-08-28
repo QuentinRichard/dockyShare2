@@ -34,8 +34,6 @@ export async function sortTrees(trees: IPropertiesTable[]): Promise<{ flat: Map<
   return { flat: map, sorted: roots };
 }
 function getGroupOfType(type: useTreesDefinition) {
-  console.log(useTreesDefinition.FullTree, useTreesDefinition.TreeArticle);
-  console.log(useTreesDefinition);
   switch (type) {
     case useTreesDefinition[useTreesDefinition.TreeDocky]:
     case useTreesDefinition[useTreesDefinition.FullTreeDocky]:

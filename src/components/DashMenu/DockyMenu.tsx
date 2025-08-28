@@ -96,7 +96,8 @@ export default function DockyMenu(
 
     const getFormatedTree = (trees: IPropertiesTable[]) => {
         const formated: TreeNode[] = [];
-        return FormatedTree(trees, formated);
+        const result = FormatedTree(trees, formated);
+        return result;
     }
 
     const DEFAULT_PADDING = 8;
@@ -237,7 +238,6 @@ export default function DockyMenu(
         <TreeMenu
             data={getFormatedTree(trees)}
             onClickItem={({ key, label, ...props }) => {
-                console.log(`TreeMenu Click: ${key}, ${label}, ${JSON.stringify(props)}`);
                 if (onClickAction) onClickAction(key);
 
             }}

@@ -20,7 +20,7 @@ export enum DockyFileCatEnum {
     Article_AUDIO = 'Audio',
     Article_VIDEO = 'video',
     Article_Survey = 'Survey',
-    Article_App = 'App', // TODO exemple for next step
+    Article_App = 'App', // TODO exemple for next step Event
 }
 
 export const dockyFileTypeEnum = pgEnum(
@@ -33,6 +33,10 @@ export interface DockyFileDataChildren {
     order: number
 }
 
+export interface DockyFileDataOther {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    [key: string]: any
+}
 export interface DockyFileData {
     id?: number
     name: string
@@ -44,7 +48,7 @@ export interface DockyFileData {
     cat: DockyFileCatEnum | string | any
     isPublic: number
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    data: DockyFileData | any
+    data: DockyFileData | DockyFileDataOther | any
     userId?: number
     treeId: number
     children?: DockyFileDataChildren[]
@@ -66,6 +70,8 @@ export interface UpdateDockyFileData {
     data: DockyFileData | any
     treeId: number
     children?: DockyFileDataChildren[]
+
+    result?: string
 }
 export interface PostDockyFileData {
     name: string

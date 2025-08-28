@@ -1,4 +1,13 @@
 module.exports = {
   root: true,
   extends: ["plugin:tailwindcss/recommended"],
+  plugins: [
+    // ...
+    "react-hooks"
+  ],
+  rules: {
+    // ...
+    "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
+  }
 };

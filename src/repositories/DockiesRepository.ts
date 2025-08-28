@@ -1,6 +1,7 @@
 import dbConnexion from '@/db/connexion';
 import { DockyFileChildren, DockyFileData, DockyFileTypeEnum, UpdateDockyFileData, dockiesChildrenTable, dockiesTable } from '@/db/schema/dockies';
 import { and, eq, like } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { generateSlug } from "random-word-slugs";
 import slug from 'slug';
 
@@ -39,7 +40,6 @@ export async function getDockies(userId: number, type?: DockyFileTypeEnum | null
             .where(type ? and(eq(dockiesTable.userId, userId), eq(dockiesTable.type, type)) : eq(dockiesTable.userId, userId));
         const map = new Map();
 
-        rows.forEach(e => console.log(JSON.stringify(e)));
 
         // Crée les noeuds
         rows.forEach(({ dockies }) => {
@@ -59,6 +59,7 @@ export async function getDockies(userId: number, type?: DockyFileTypeEnum | null
             }
         });
 
+        //QRI must be checked
         const ret: DockyFileData[] = [];
         [...map.values()]
             .forEach((item: DockyFileData) => {
@@ -68,24 +69,7 @@ export async function getDockies(userId: number, type?: DockyFileTypeEnum | null
 
         return ret;
 
-        //return map.get(dockyId);        
-        // const result = await dbConnexion.execute(sql`
-        //   WITH RECURSIVE docky_tree AS (
-        //     SELECT d.*, dc.parent_id, dc.child_id
-        //     FROM dockies d
-        //     LEFT JOIN dockies_children dc ON d.id = dc.child_id
-        //     WHERE d.user_id = ${userId}
 
-        //     UNION ALL
-
-        //     SELECT d.*, dc.parent_id, dc.child_id
-        //     FROM dockies d
-        //     JOIN dockies_children dc ON d.id = dc.child_id
-        //     JOIN docky_tree t ON dc.parent_id = t.id
-        //   )
-        //   SELECT * FROM docky_tree;
-        // `)
-        // return result as unknown as DockyFileData[];
     } catch (e) {
         console.log(e);
         return []
@@ -96,30 +80,50 @@ export async function getDocky(dockyId: number): Promise<DockyFileData | undefin
     try {
         const rows = await dbConnexion
             .select()
-            .from(dockiesChildrenTable)
-            .leftJoin(dockiesTable, eq(dockiesChildrenTable.childId, dockiesTable.id))
-            .where(eq(dockiesChildrenTable.parentId, dockyId));
-        const map = new Map();
+            .from(dockiesTable)
+            .where(eq(dockiesTable.id, dockyId));
 
-        // Crée les noeuds
-        rows.forEach(({ dockies }) => {
-            if (!map.has(dockies!.id)) {
-                map.set(dockies!.id, { ...dockies, children: [] });
-            }
-        });
+        return rows.length ? rows[0]! as DockyFileData : undefined;
+    } catch (e) {
+        console.log(e);
+        return undefined;
+    }
+}
 
-        // Relie parent ↔ enfant
-        rows.forEach(({ dockies_children }) => {
-            if (dockies_children?.parentId && dockies_children?.childId) {
-                const parent = map.get(dockies_children.parentId);
-                const child = map.get(dockies_children.childId);
-                if (parent && child) {
-                    parent.children.push(child);
-                }
-            }
-        });
+export async function getDockyBySlugOrId(slug: string | undefined, id: number | undefined): Promise<DockyFileData | undefined> {
+    try {
 
-        return map.get(dockyId);
+        const dockiesChildTable = alias(dockiesTable, 'docky_child');
+        const rows = await dbConnexion
+            .select({
+                parent: dockiesTable,
+                relation: dockiesChildrenTable,
+                child: dockiesChildTable, // <-- ici on sélectionne bien l'enfant
+            })
+            .from(dockiesTable)
+            .leftJoin(
+                dockiesChildrenTable,
+                eq(dockiesChildrenTable.parentId, dockiesTable.id)
+            )
+            .leftJoin(
+                dockiesChildTable,
+                eq(dockiesChildrenTable.childId, dockiesChildTable.id)
+            )
+            .where(slug ? eq(dockiesTable.slug, slug) : id ? eq(dockiesTable.id, id) : eq(dockiesTable.id, -1));
+
+        if (!rows.length) return undefined;
+
+        // Le parent est toujours le même, les enfants sont dans les lignes
+        const parent = rows[0].parent;
+        const children = rows
+            .map(row => row.child)
+            .filter(child => !!child);
+
+        return {
+            ...(parent as DockyFileData),
+            children,
+        } as unknown as DockyFileData;
+
     } catch (e) {
         console.log(e);
         return undefined;
@@ -127,16 +131,7 @@ export async function getDocky(dockyId: number): Promise<DockyFileData | undefin
 }
 
 
-
 export async function createDocky(docky: DockyFileData): Promise<number> {
-    // const newDocky: typeof dockiesTable.$inferInsert = {
-    //     name: docky.name,
-    //     description: docky.description,
-    //     type: docky.type,
-    //     data: docky.data,
-    //     userId: docky.userId,
-    // };
-
     const slug = await getDockySlug(docky.name);
     docky.slug = slug;
     const id = await dbConnexion.insert(dockiesTable).values(docky).returning({ id: dockiesTable.id });

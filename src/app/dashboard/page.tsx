@@ -58,7 +58,8 @@ export default function Dashboard() {
     }
 
     const onMenuNavigate = (slug: string) => {
-        setSlugNavigation(slug);
+        if (slug.length > 0)
+            setSlugNavigation(slug);
     }
 
     return (

@@ -1,11 +1,10 @@
 import { useDockyShareContext } from "@/app/dashboard/context";
 import { useTreesDefinition } from "@/app/lib/definition";
-import { callDockiesPost, useTrees, } from "@/app/lib/uses";
+import { callDockiesPost, useTrees } from "@/app/lib/uses";
 import DockyMenu from "@/components/DashMenu/DockyMenu";
-import { buildOptionSelectionforArticleCat } from "@/components/DashMenu/menuBuilder";
-import { DockyFileData, DockyFileTypeEnum, PostDockyFileData } from "@/db/schema/dockies";
+import { DockyFileCatEnum, DockyFileData, DockyFileTypeEnum, PostDockyFileData } from "@/db/schema/dockies";
 import { IPropertiesTable } from "@/db/schema/property";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 export interface ArticleDataForm {
     trees: IPropertiesTable[],
@@ -18,13 +17,31 @@ export interface ArticleFormProps {
 }
 
 
+function buildOptionSelectionforArticleCat(): ReactNode {
+    const cat = [
+        { name: "Un fichier Mardown", id: DockyFileCatEnum.Article_MD },
+        { name: "Tableau de dessin", id: DockyFileCatEnum.Article_Board },
+        { name: "Une Image", id: DockyFileCatEnum.Article_IMG },
+        { name: "Un fichier Audio", id: DockyFileCatEnum.Article_AUDIO },
+        { name: "Un fichier Vidéo", id: DockyFileCatEnum.Article_VIDEO },
+        { name: "Un questionnaire", id: DockyFileCatEnum.Article_Survey }
+    ]
+    const output: unknown[] = [];
+    cat.forEach((item, index) => {
+        output.push((<option key={`arcitcleCat_${index}`} value={item.id} className="pl-2">{item.name}</option>) as unknown)
+    });
+    return output as unknown as ReactNode;
+}
+
+
 export default function CreateArticleForm(props: ArticleFormProps) {
-    const { setArticles } = useDockyShareContext();
+    const { setTrees } = useDockyShareContext();
     const { data, isError, isLoading } = useTrees(useTreesDefinition.TreeArticle);
     const [parentId, setParentId] = useState(0);
 
     const onMenuClick = (id: number | string) => {
-        setParentId(typeof id === 'number' ? id : Number(id));
+        const fKey = (id as string).split('/').at(-1);
+        setParentId(typeof fKey === 'number' ? fKey : Number(fKey));
     }
 
     const onAction = async (formData: FormData) => {
@@ -41,8 +58,8 @@ export default function CreateArticleForm(props: ArticleFormProps) {
         try {
             const articles = await callDockiesPost(article);
             if (articles) {
-                setArticles(articles.data);
-                const found = articles.data!.find((art: DockyFileData) => art.id === articles.new)
+                setTrees(articles.data);
+                const found = articles.data!.find((art: DockyFileData) => art.id === articles.new.id)
                 props.action(true, `Le slug du nouveau article est: ${found.slug}`);
                 return;
             }

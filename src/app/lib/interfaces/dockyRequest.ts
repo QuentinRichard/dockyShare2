@@ -21,7 +21,7 @@ export const DockyRequestSchema = z.object({
     isPublic: z
         .number(),
     data: z
-        .looseObject({ id: z.number() }).optional(),
+        .looseObject({}).optional(),
     children: z
         .object({
             id: z.number(),
@@ -29,6 +29,9 @@ export const DockyRequestSchema = z.object({
         }).array().optional(),
     treeId: z
         .number(),
+
+    result: z
+        .string().optional(),
 
 })
 
@@ -47,7 +50,7 @@ export const DockyPutRequestSchema = z.object({
     isPublic: z
         .number(),
     data: z
-        .looseObject({ id: z.number() }),
+        .looseObject({}),
     children: z
         .looseObject({
             id: z.number(),

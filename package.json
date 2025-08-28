@@ -11,6 +11,8 @@
     "seed": "tsx src/seed/index.ts"
   },
   "dependencies": {
+    "@mdxeditor/editor": "^3.42.0",
+    "@tailwindcss/typography": "^0.5.16",
     "bcryptjs": "^3.0.2",
     "class-validator": "^0.14.2",
     "drizzle-orm": "^0.44.4",
@@ -23,10 +25,12 @@
     "random-word-slugs": "^0.1.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-markdown": "^10.1.0",
     "react-simple-tree-menu": "^1.1.18",
     "react-toastify": "^11.0.5",
     "reactstrap": "^9.2.3",
     "reflect-metadata": "^0.2.2",
+    "remark-gfm": "^4.0.1",
     "slug": "^11.0.0",
     "swr": "^2.3.6",
     "typeorm": "^0.3.26",

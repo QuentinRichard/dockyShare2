@@ -4,25 +4,6 @@ import { IPropertiesTable } from '@/db/schema/property';
 import useSWR from 'swr';
 import { useTreesDefinition } from './definition';
 
-// export const fetcher = async (
-//   payload?: string,
-// ) => {
-//   const options = {
-//     method: payload ? "POST" : "GET",
-//     ...(payload && { body: payload }),
-//     headers: {
-//       accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//   };
-
-//   return fetch(url, options)
-//     .then(r => {
-//       const ret = r.json();
-//       console.log("############=>", JSON.stringify(ret))
-//       return ret;
-//     });
-// };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const fetcherPost = (payload: any) => {
@@ -77,8 +58,20 @@ export function useDockies() {
     isError: error
   }
 }
-export function callDockiesPost(payload: UpdateDockyFileData) {
-  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcherPost(payload))
+
+export function useGetDockeySlug(slug: string) {
+  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies?slug=${slug}`, fetcher)
+  const { data, error, isLoading } = useSWR(slug.length > 0 ? [`/api/dashboard/dockies?slug=${slug}`] : null, fetcher)
+
+  return {
+    data,
+    isLoading,
+    isError: error
+  }
+}
+
+export function callDockiesPost(payload: UpdateDockyFileData, type: 'Docky' | 'FullTree' = 'FullTree') {
+  payload.result = type;
   const options = {
     method: "POST",
     body: JSON.stringify(payload),
@@ -88,7 +81,20 @@ export function callDockiesPost(payload: UpdateDockyFileData) {
     },
   }
   //TODO Improve by managing error and provide error message
-  return fetch(`/api/dashboard/tree`, options).then((res) => res.json());
+  return fetch(`/api/dashboard/dockies`, options).then((res) => res.json());
+}
+export function callDockiesPut(payload: UpdateDockyFileData) {
+  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcherPost(payload))
+  const options = {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  }
+  //TODO Improve by managing error and provide error message
+  return fetch(`/api/dashboard/dockies`, options).then((res) => res.json());
 }
 
 

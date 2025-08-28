@@ -1,116 +1,50 @@
 'use client'
 
+import { useGetDockeySlug } from "@/app/lib/uses";
+import ArticleMdView from "@/components/DockyView/ArticleMd";
+import { DockyFileCatEnum, DockyFileData, DockyFileTypeEnum } from "@/db/schema/dockies";
+import DockyView from "../DockyView/DockyView";
+
 export interface DashContentProps {
     slug: string
 }
+export interface DashContentToolbarProps {
+    onSave: () => void
+    onCancel: () => void
+}
+
+export function DashContentToolbarProps(props: DashContentToolbarProps) {
+    return (
+        <div className="border-b border-t border-gray-400 p-2 flex justify-center gap-2">
+            <button className="bg-amber-200 text-white px-4 py-2 rounded hover:bg-red-600" onClick={props.onCancel}>Annuler</button>
+            <button className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700" onClick={props.onSave}>Sauvegarder</button>
+        </div>
+    );
+}
 
 export default function DashContent(props: DashContentProps) {
-    console.log(props);
+
+    const { data, isError, isLoading } = useGetDockeySlug(props.slug);
+    const getViewConfig = (data: DockyFileData) => {
+        if (!data) return (<div>Pas de données</div>);
+        if (data.type === DockyFileTypeEnum.Docky) {
+            return (<DockyView data={data} />);
+        } else {
+            if (data.type === DockyFileTypeEnum.Article) {
+                switch (data.cat! as DockyFileCatEnum) {
+                    case DockyFileCatEnum.Article_MD:
+
+                        console.log(" getViewConfig ArticleMdView");
+                        return (<ArticleMdView data={data} toolbar={DashContentToolbarProps}></ArticleMdView>);
+                    default:
+                        return (<div>Cat pas encore dev</div>);
+                }
+            }
+        }
+    }
     return (
         <div className="border-gray-400 border-2 h-full w-full shrink">
-
-            {/* <div className="p-4 sm:ml-64">
-                    <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-                        <div className="grid grid-cols-3 gap-4 mb-4">
-                            <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-center h-48 mb-4 rounded-sm bg-gray-50 dark:bg-gray-800">
-                            <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                </svg>
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-center h-48 mb-4 rounded-sm bg-gray-50 dark:bg-gray-800">
-                            <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                </svg>
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                            <div className="flex items-center justify-center rounded-sm bg-gray-50 h-28 dark:bg-gray-800">
-                                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                                    <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
+            {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>}
         </div>
     );
 }

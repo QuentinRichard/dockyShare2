@@ -27,7 +27,7 @@ export default function CreateDockyForm(props: DockyFormProps) {
         setParentId(typeof id === 'number' ? id.toString() : id);
     }
 
-    const { setDockies } = useDockyShareContext();
+    const { setTrees } = useDockyShareContext();
 
 
     const onAction = async (formData: FormData) => {
@@ -46,8 +46,8 @@ export default function CreateDockyForm(props: DockyFormProps) {
         }
         const dockies = await callDockiesPost(docky);
         if (dockies) {
-            setDockies(dockies.data);
-            const found = dockies.data.find((dockyRes: IPropertiesTable) => dockyRes.id === dockies.new)
+            setTrees(dockies.data);
+            const found = dockies.data.find((dockyRes: IPropertiesTable) => dockyRes.id === dockies.new.id)
             props.action(true, `Le slug du nouveau document est: ${found.slug}`);
             return;
         }

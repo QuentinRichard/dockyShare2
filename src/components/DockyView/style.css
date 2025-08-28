@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+.prose ul{
+  list-style: inside !important;
+   list-style-type: disc !important; 
+   list-style-position: inside !important;
+}
+.prose ol{
+  list-style: inside !important;
+   list-style-type: decimal !important; 
+   list-style-position: inside !important;
+}

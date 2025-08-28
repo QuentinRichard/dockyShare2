@@ -11,7 +11,6 @@ export async function seedAdminTrees1() {
         type: PropertyTreeType.Library
     };
     const bibliId = await addTree(blibli);
-    console.log(bibliId);
 
     const article: IPropertiesTable = {
         content: '',
