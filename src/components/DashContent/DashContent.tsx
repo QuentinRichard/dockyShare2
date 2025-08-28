@@ -3,6 +3,7 @@
 import { useGetDockeySlug } from "@/app/lib/uses";
 import ArticleMdEdit from "@/components/DockyView/ArticleMdEdit";
 import { DockyFileCatEnum, DockyFileData, DockyFileTypeEnum } from "@/db/schema/dockies";
+import ArticleBoardDrawEdit from "../DockyView/ArticleBoardDrawEdit";
 import ArticlePlantUmlEdit from "../DockyView/ArticlePlantUmlEdit";
 import DockyView from "../DockyView/DockyView";
 
@@ -37,8 +38,10 @@ export default function DashContent(props: DashContentProps) {
                         return (<ArticleMdEdit data={data} toolbar={DashContentToolbarProps}></ArticleMdEdit>);
                     case DockyFileCatEnum.Article_Graph:
                         return (<ArticlePlantUmlEdit data={data} toolbar={DashContentToolbarProps}></ArticlePlantUmlEdit>);
+                    case DockyFileCatEnum.Article_Board:
+                        return (<ArticleBoardDrawEdit data={data} toolbar={DashContentToolbarProps}></ArticleBoardDrawEdit>);
                     default:
-                        return (<div>Cat pas encore dev</div>);
+                        return (<div>Cat pas encore dev {data.type}</div>);
                 }
             }
         }

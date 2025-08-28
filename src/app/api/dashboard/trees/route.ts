@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
     //TODO use Rules to retrieve Admin Trees
     const TypeDef = type as unknown as useTreesDefinition;
     const trees = await getSortedTreesList(session?.userId as number, TypeDef);
-    console.log('trees.sorted1:', trees.sorted[0].children![0]?.children?.length)
     switch (TypeDef) {
         //Tree, TreeDocky, TreeArticle, FullTree, FullTreeDocky, FullTreeArticle
         case useTreesDefinition.Tree:
@@ -48,8 +47,6 @@ export async function GET(request: NextRequest) {
             break;
     }
 
-    //Type=Tree by default
-    console.log('trees.sorted2:', trees.sorted[0].children![0]?.children?.length)
     return NextResponse.json(trees.sorted);
 }
 

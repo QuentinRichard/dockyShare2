@@ -90,7 +90,7 @@ export async function getDocky(dockyId: number): Promise<DockyFileData | undefin
     }
 }
 
-export async function getDockyBySlugOrId(slug: string | undefined, id: number | undefined): Promise<DockyFileData | undefined> {
+export async function getFullDockyBySlugOrId(slug: string | undefined, id: number | undefined): Promise<DockyFileData | undefined> {
     try {
 
         const dockiesChildTable = alias(dockiesTable, 'docky_child');

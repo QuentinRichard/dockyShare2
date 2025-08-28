@@ -2,7 +2,7 @@ import { useTreesDefinition } from '@/app/lib/definition';
 import { DockyPutRequestSchema, DockyRequestSchema } from '@/app/lib/interfaces/dockyRequest';
 import { getSession } from '@/app/lib/session';
 import { DockyFileDataChildren, DockyFileTypeEnum } from '@/db/schema/dockies';
-import { createDocky, deleteDocky, getDockies, getDocky, getDockyBySlugOrId, updateDocky } from '@/repositories/DockiesRepository';
+import { createDocky, deleteDocky, getDockies, getDocky, getFullDockyBySlugOrId, updateDocky } from '@/repositories/DockiesRepository';
 import { getSortedTreesList } from '@/repositories/PropertyRepository';
 import { NextRequest, NextResponse } from 'next/server';
 import { } from 'slug';
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         );
     }
     if (slug) {
-        const docky = await getDockyBySlugOrId(slug);
+        const docky = await getFullDockyBySlugOrId(slug);
         return NextResponse.json(docky ?? {});
     }
 
@@ -101,7 +101,7 @@ export async function PUT(request: Request) {
 
     // Check if the owner of parent is the user
 
-    const docky = await getDockyBySlugOrId(undefined, id);
+    const docky = await getFullDockyBySlugOrId(undefined, id);
     if (!docky || docky?.userId !== session?.userId) {
         return new Response('Invalid Rules', {
             status: 400,

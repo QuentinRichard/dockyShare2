@@ -63,7 +63,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div ref={containerRef} className="lex-1 flex flex-row h-full w-full bg-red-200 min-h-0" id='dashboard'>
+        <div ref={containerRef} className="flex-1 flex flex-row h-full w-full bg-red-200 min-h-0" id='dashboard'>
             {/* Menu à gauche + poignée */}
             <div
                 className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 relative"
