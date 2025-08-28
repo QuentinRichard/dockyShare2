@@ -63,28 +63,35 @@ export default function Dashboard() {
     }
 
     return (
-        <div ref={containerRef} className="flex-1 flex flex-row h-full w-full" id='dashboard'>
+        <div ref={containerRef} className="lex-1 flex flex-row h-full w-full bg-red-200 min-h-0" id='dashboard'>
             {/* Menu à gauche + poignée */}
             <div
-                className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
+                className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 relative"
                 style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
             >
 
                 <DashMenu navigation={onMenuNavigate} />
                 {/* Poignée de redimensionnement */}
-                <div
-                    className="absolute top-0 right-0 h-full w-2 flex items-center justify-center cursor-col-resize select-none z-20"
+                {/* <div
+                    className="h-full w-2 flex items-center justify-center cursor-col-resize select-none z-20"
                     onMouseDown={() => setIsResizing(true)}
                     role="separator"
                     aria-orientation="vertical"
                     tabIndex={0}
                 >
                     <div className="w-1 h-16 bg-gray-400 rounded-full" />
-                </div>
+                </div> */}
+            </div>
+            <div
+                className="w-2 cursor-col-resize bg-gray-200 hover:bg-emerald-400 z-10 flex items-center"
+                onMouseDown={() => setIsResizing(true)}
+                style={{ userSelect: 'none' }}
+            >
+                <div className="w-1 h-16 bg-gray-400 rounded-full mx-auto" />
             </div>
 
             {/* Contenu à droite */}
-            <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800">
+            <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800 relative">
                 <DashContent slug={slugNavigation} />
             </div>
 
@@ -96,6 +103,6 @@ export default function Dashboard() {
                 rtl={false}
                 pauseOnFocusLoss
             />
-        </div>
+        </div >
     );
 }

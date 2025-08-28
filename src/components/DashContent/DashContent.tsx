@@ -44,8 +44,10 @@ export default function DashContent(props: DashContentProps) {
         }
     }
     return (
-        <div className="flex-1 h-full overflow-auto border-gray-400 border-2 h-full w-full shrink">
-            {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>}
+        <div className="h-full flex flex-col  border-gray-400 shrink">
+            <div className="flex-1 h-full">
+                {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>}
+            </div>
         </div>
     );
 }

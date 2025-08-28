@@ -60,7 +60,7 @@ export default function DashMenu(props: DashMenuProps) {
     return (
         <div
             id="sidebar-multi-level-sidebar"
-            className="flex-1 h-full overflow-auto border-r border-black transition-all"
+            className="flex-1 h-full border-r border-black "
             aria-label="Sidebar"
         >
             {DockyMenu(trees, onEditAction, onAddDivAction, onAddAction, undefined)}

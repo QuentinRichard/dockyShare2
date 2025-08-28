@@ -99,16 +99,16 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
 
     }
     return (
-        <div className="border-gray-400 border-2 w-full shrink p-4 overflow-auto">
+        <div className="border-gray-400 border-2 w-full flex-1 h-full shrink p-4 overflow-auto">
 
-            <div ref={containerRef} className="h-auto w-full  flex flex-row relative" id='dashboard'>
+            <div ref={containerRef} className="h-full w-full  flex flex-row relative" id='dashboard'>
                 {/* Menu à gauche + poignée */}
                 <div
-                    className=" bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
+                    className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
                     style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
                 >
                     <textarea
-                        className="w-full p-4 border-0 resize-none focus:ring-0 focus:outline-none"
+                        className="w-full h-full p-4 border-0 resize-none focus:ring-0 focus:outline-none"
                         value={plantUmlSrc}
                         onChange={(e) => {
                             onContentChange(e.target.value);
@@ -140,8 +140,4 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
 
         </div >
     )
-}
-
-function setMarkdown(arg0: any) {
-    throw new Error('Function not implemented.');
 }
