@@ -1,9 +1,9 @@
 "use client"
-import DashContent from '@/components/DashContent/DashContent';
-import DashMenu from '@/components/DashMenu/DashMenu';
 import { useEffect, useRef, useState } from 'react';
 // import { ToastContainer } from 'react-toastify';
 import { useTrees } from '@/app/lib/uses';
+import DashContent from '@/components/DashContent/DashContent';
+import DashMenu from '@/components/DashMenu/DashMenu';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDockyShareContext } from './context';
@@ -63,12 +63,13 @@ export default function Dashboard() {
     }
 
     return (
-        <div ref={containerRef} className="h-screen w-screen flex flex-row relative" id='dashboard'>
+        <div ref={containerRef} className="flex-1 flex flex-row h-full w-full" id='dashboard'>
             {/* Menu à gauche + poignée */}
             <div
                 className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
                 style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
             >
+
                 <DashMenu navigation={onMenuNavigate} />
                 {/* Poignée de redimensionnement */}
                 <div

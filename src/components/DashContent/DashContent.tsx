@@ -1,8 +1,9 @@
 'use client'
 
 import { useGetDockeySlug } from "@/app/lib/uses";
-import ArticleMdView from "@/components/DockyView/ArticleMd";
+import ArticleMdEdit from "@/components/DockyView/ArticleMdEdit";
 import { DockyFileCatEnum, DockyFileData, DockyFileTypeEnum } from "@/db/schema/dockies";
+import ArticlePlantUmlEdit from "../DockyView/ArticlePlantUmlEdit";
 import DockyView from "../DockyView/DockyView";
 
 export interface DashContentProps {
@@ -33,9 +34,9 @@ export default function DashContent(props: DashContentProps) {
             if (data.type === DockyFileTypeEnum.Article) {
                 switch (data.cat! as DockyFileCatEnum) {
                     case DockyFileCatEnum.Article_MD:
-
-                        console.log(" getViewConfig ArticleMdView");
-                        return (<ArticleMdView data={data} toolbar={DashContentToolbarProps}></ArticleMdView>);
+                        return (<ArticleMdEdit data={data} toolbar={DashContentToolbarProps}></ArticleMdEdit>);
+                    case DockyFileCatEnum.Article_Graph:
+                        return (<ArticlePlantUmlEdit data={data} toolbar={DashContentToolbarProps}></ArticlePlantUmlEdit>);
                     default:
                         return (<div>Cat pas encore dev</div>);
                 }
@@ -43,7 +44,7 @@ export default function DashContent(props: DashContentProps) {
         }
     }
     return (
-        <div className="border-gray-400 border-2 h-full w-full shrink">
+        <div className="flex-1 h-full overflow-auto border-gray-400 border-2 h-full w-full shrink">
             {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>}
         </div>
     );

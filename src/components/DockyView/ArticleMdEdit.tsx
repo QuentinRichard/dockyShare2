@@ -20,16 +20,15 @@ import {
 } from '@mdxeditor/editor';
 import { useState } from 'react';
 import { ViewProps } from './ViewProps';
+import { emptyMD } from './commun';
 
-const emptyMD = `
-`;
 
-export default function ArticleMdView(props: ViewProps) {// DockyFileData
+export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
     const mdStr = `# This is a H1  \n## This is a H2  \n###### This is a H6`;
     const [markdown, setMarkdown] = useState(props.data!.data['content'] || emptyMD);
     const [key, setKey] = useState(Date.now());
 
-    console.log("ArticleMdView", props.data);
+    console.log("ArticleMdEdit", props.data);
     const onContentChange = (md: string) => {
         if (md.length === 0) md = emptyMD;
         setMarkdown(md);

@@ -1,7 +1,8 @@
 TODO :
 ------
 => Tree ajouter des icons lors de la creation optionnal
-=> Ajout de Rect-modal, react-markdown
+=> Use react-markdown as viewer 
+=> build the plantUml edit+viewer
 => i18N
 
 

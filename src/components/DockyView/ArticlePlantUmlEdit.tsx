@@ -1,0 +1,147 @@
+
+
+import { callDockiesPut } from '@/app/lib/uses';
+import { UpdateDockyFileData } from '@/db/schema/dockies';
+import plantumlEncoder from 'plantuml-encoder';
+import { useEffect, useRef, useState } from 'react';
+import { emptyMD } from './commun';
+import { ViewProps } from './ViewProps';
+
+
+
+export default function ArticlePlantUmlEdit(props: ViewProps) {
+    const [plantUmlSrc, setPlantUmlSrc] = useState(props.data!.data['content'] || emptyMD);
+    const [encoded, setEncoded] = useState(props.data!.data['encoded'] || emptyMD);
+    const [imgSrc, setImgSrc] = useState(props.data!.data['imgSrc'] || emptyMD);
+    const [key, setKey] = useState(Date.now());
+    const imageSrcRef = useRef<HTMLDivElement>(null);
+
+    const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+
+    // Largeur du menu redimensionnable
+    const minWidth = 200;
+    const [menuWidth, setMenuWidth] = useState(minWidth);
+    const [isResizing, setIsResizing] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!isResizing) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            // On calcule la position relative au conteneur parent
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                setMenuWidth(Math.max(180, Math.min(x, rect.width)));
+            }
+        };
+        const handleMouseUp = () => {
+            setIsResizing(false);
+            document.body.style.cursor = "";
+            document.body.classList.remove("select-none");
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+        document.body.style.cursor = "col-resize";
+        document.body.classList.add("select-none");
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+            document.body.style.cursor = "";
+            document.body.classList.remove("select-none");
+        };
+    }, [isResizing]);
+    function blobToBase64(blob: Blob) {
+        return new Promise((resolve, _) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
+    const onContentChange = async (md: string) => {
+        if (md.length === 0) md = emptyMD;
+
+        setPlantUmlSrc(md);
+
+        // Debounce pour éviter les appels trop fréquents
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+
+        debounceRef.current = setTimeout(async () => {
+            const encoded = plantumlEncoder.encode(md);
+            setPlantUmlSrc(md);
+            //setEncoded(encoded);
+            const blob = await fetch(`http://www.plantuml.com/plantuml/img/${encoded}`)
+                .then(res => { return res.blob() })
+
+            const base64 = await blobToBase64(blob) as string;
+            let objectURL = URL.createObjectURL(blob);
+            imageSrcRef.current!.setAttribute('src', objectURL);
+            console.log('base64', base64);
+            setEncoded(encoded);
+            setImgSrc(base64);
+            setKey(Date.now());
+        }, 800); // 600ms après la dernière frappe
+    }
+
+    const onSave = async () => {
+        const newData: UpdateDockyFileData = { ...props.data, data: { content: plantUmlSrc, encoded, imgSrc } };
+        await callDockiesPut(newData);
+    }
+
+    const onCancel = () => {
+        setPlantUmlSrc(props.data!.data['content'] || emptyMD);
+        setEncoded(props.data!.data['encoded'] || emptyMD);
+        setImgSrc(props.data!.data['imgSrc'] || emptyMD);
+        console.log("Cancel");
+
+    }
+    return (
+        <div className="border-gray-400 border-2 w-full shrink p-4 overflow-auto">
+
+            <div ref={containerRef} className="h-auto w-full  flex flex-row relative" id='dashboard'>
+                {/* Menu à gauche + poignée */}
+                <div
+                    className=" bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
+                    style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
+                >
+                    <textarea
+                        className="w-full p-4 border-0 resize-none focus:ring-0 focus:outline-none"
+                        value={plantUmlSrc}
+                        onChange={(e) => {
+                            onContentChange(e.target.value);
+                        }}
+                        rows={5}
+                        cols={33}
+                    >{plantUmlSrc}</textarea>
+
+                    {/* Poignée de redimensionnement */}
+                    <div
+                        className="absolute top-0 right-0 w-2 flex items-center justify-center cursor-col-resize select-none z-20"
+                        onMouseDown={() => setIsResizing(true)}
+                        role="separator"
+                        aria-orientation="vertical"
+                        tabIndex={0}
+                    >
+                        <div className="w-1 h-16 bg-gray-400 rounded-full" />
+                    </div>
+                </div>
+
+                {/* Contenu à droite */}
+                <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800">
+                    <img key={key} ref={imageSrcRef} src={imgSrc} />
+                    {/* src={`http://www.plantuml.com/plantuml/img/${encoded}`} */}
+                </div>
+
+            </div>
+            {props.toolbar && <props.toolbar onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }}></props.toolbar>}
+
+        </div >
+    )
+}
+
+function setMarkdown(arg0: any) {
+    throw new Error('Function not implemented.');
+}
