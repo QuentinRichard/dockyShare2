@@ -1,7 +1,8 @@
-
-import { DockyFileData } from '@/db/schema/dockies';
+'use client'
+import { UpdateDockyFileData } from '@/db/schema/dockies';
 import { IPropertiesTable } from '@/db/schema/property';
 import useSWR from 'swr';
+import { useTreesDefinition } from './definition';
 
 // export const fetcher = async (
 //   payload?: string,
@@ -42,8 +43,9 @@ export const fetcherPost = (payload: any) => {
 
 const fetcher = (uri: string) => fetch(uri).then((res) => res.json());
 
-export function useTrees() {
-  const { data, error, isLoading } = useSWR(`/api/dashboard/trees?type=FullTree`, fetcher)
+
+export function useTrees(type: useTreesDefinition = useTreesDefinition.FullTree) {
+  const { data, error, isLoading } = useSWR(`/api/dashboard/trees?type=${type}`, fetcher)
 
   return {
     data,
@@ -52,30 +54,7 @@ export function useTrees() {
   }
 }
 
-export function useDockies() {
-  const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcher)
-
-  return {
-    data,
-    isLoading,
-    isError: error
-  }
-}
-export function callDockiesPost(payload: DockyFileData) {
-  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcherPost(payload))
-  const options = {
-    method: "POST",
-    body: JSON.stringify(payload),
-    headers: {
-      accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  }
-  //TODO Improve by managing error and provide error message
-  return fetch(`/api/dashboard/tree?type=FullTree`, options).then((res) => res.json());
-}
-
-export function callDivPost(payload: IPropertiesTable) {
+export function callTreePost(payload: IPropertiesTable) {
   //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcherPost(payload))
   const options = {
     method: "POST",
@@ -88,6 +67,30 @@ export function callDivPost(payload: IPropertiesTable) {
   //TODO Improve by managing error and provide error message
   return fetch(`/api/dashboard/trees`, options).then((res) => res.json());
 }
+
+export function useDockies() {
+  const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcher)
+
+  return {
+    data,
+    isLoading,
+    isError: error
+  }
+}
+export function callDockiesPost(payload: UpdateDockyFileData) {
+  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies`, fetcherPost(payload))
+  const options = {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  }
+  //TODO Improve by managing error and provide error message
+  return fetch(`/api/dashboard/tree`, options).then((res) => res.json());
+}
+
 
 
 // export function useProperties() {

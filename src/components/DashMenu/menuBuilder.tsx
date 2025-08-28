@@ -43,7 +43,7 @@ function getTypeForDockyTree(type: PropertyTreeType) {
             break;
         default:
             console.log(`Type unknown for getTypeForDockyTree :${type}`);
-            return "";
+            return undefined;
             break;
     }
 }
@@ -57,8 +57,8 @@ function findDockyFileForTreesId(id: number, type: PropertyTreeType, dockies: Do
             console.log(`found docky ${d.id}`)
             ret.push({
                 name: d.name,
-                type: getTypeForDockyTree(type),
-                content: d.slug,
+                type: getTypeForDockyTree(type) as PropertyTreeType,
+                content: d.slug as string,
                 parentId: id,
             })
         }
@@ -86,14 +86,14 @@ function getDockeyData(type: PropertyTreeType, dockies: DockyFileData[], article
             console.log(`Type unknown for getDockeyData ${type}`);
             break;
     }
-    return undefined;
+    return [];
 }
 
 function populateDocky(trees: IPropertiesTable[], dockies: DockyFileData[], articles: DockyFileData[],) {
 
     trees?.forEach((tree) => {
         if (tree.children && tree.children?.length === 0) {
-            const docky = findDockyFileForTreesId(tree.id, tree.type, getDockeyData(tree.type, dockies, articles))
+            const docky = findDockyFileForTreesId(tree!.id as number, tree.type, getDockeyData(tree.type, dockies, articles))
             tree.children = docky;
         } else {
             if (tree.children)

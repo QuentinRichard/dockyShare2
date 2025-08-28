@@ -1,11 +1,11 @@
 'use client'
 
+import CreateArticleForm, { ArticleDataForm } from "@/components/Forms/CreateArticle";
+import CreateDivForm, { DivDataForm } from "@/components/Forms/CreateDiv";
+import CreateDockyForm, { DockyDataForm } from "@/components/Forms/CreateDocky";
+import CreateEventForm from "@/components/Forms/CreateEvent";
 import { PropertyTreeType } from "@/db/schema/property";
 import { useRef } from "react";
-import CreateArticleForm, { ArticleDataForm } from "../Forms/CreateArticle";
-import CreateDivForm, { DivDataForm } from "../Forms/CreateDiv";
-import CreateDockyForm, { DockyDataForm } from "../Forms/CreateDocky";
-import CreateEventForm from "../Forms/CreateEvent";
 
 export interface ModalProps {
     icon?: string
@@ -13,7 +13,7 @@ export interface ModalProps {
     type: 'Docky' | 'Article' | 'Div' | 'Event'
     open: boolean
     data?: unknown
-    action: (data: boolean, msg: string) => void
+    action: (data: boolean, msg: string | undefined) => void
 }
 
 export function getModalType(type: PropertyTreeType) {
@@ -63,7 +63,7 @@ export default function CreateModal(props: ModalProps) {
     //         modalDialogRef.current!.showModal();
     // }
 
-    const onAction = (result: boolean, msg: string) => {
+    const onAction = (result: boolean, msg: string | undefined) => {
         props.action(result, msg);
 
         if ((modalDialogRef.current! as DialogInterface).open)

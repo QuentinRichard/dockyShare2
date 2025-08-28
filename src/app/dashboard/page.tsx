@@ -3,8 +3,9 @@ import DashContent from '@/components/DashContent/DashContent';
 import DashMenu from '@/components/DashMenu/DashMenu';
 import { useEffect, useRef, useState } from 'react';
 // import { ToastContainer } from 'react-toastify';
+import { useTrees } from '@/app/lib/uses';
 import { ToastContainer } from 'react-toastify';
-import { useTrees } from '../lib/uses';
+import 'react-toastify/dist/ReactToastify.css';
 import { useDockyShareContext } from './context';
 
 export default function Dashboard() {

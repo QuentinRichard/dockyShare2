@@ -10,12 +10,30 @@ interface TreeNode {
     nodes?: TreeNode[];
 }
 
+interface ListItemProps {
+    level?: number;
+    hasNodes?: boolean;
+    isOpen?: boolean;
+    label?: string;
+    itemKey?: string | number;
+    searchTerm?: string;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    openNodes?: any; // Replace 'any' with a more specific type if possible
+    toggleNode?: () => void;
+    matchSearch?: boolean;
+    focused?: boolean;
+    // Add any other props you expect
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    [key: string]: any; // Optional: allows extra props
+}
+
 export default function DockyMenu(
-    onEditAction: (slug: string) => void,
-    onAddDivAction: (id: number, type: PropertyTreeType) => void,
-    onAddAction: (id: number, typep: PropertyTreeType
-    ) => void,
-    trees: IPropertiesTable[]) {
+    trees: IPropertiesTable[],
+    onEditAction: undefined | ((slug: string) => void),
+    onAddDivAction: undefined | ((id: number, type: PropertyTreeType) => void),
+    onAddAction: undefined | ((id: number, typep: PropertyTreeType) => void),
+    onClickAction: undefined | ((id: number | string) => void)
+) {
     const ListItem = ({
         level = 0,
         hasNodes,
@@ -28,7 +46,7 @@ export default function DockyMenu(
         matchSearch,
         focused,
         ...props
-    }) => (
+    }: ListItemProps) => (
         <ListGroupItem
             {...props}
             style={{
@@ -60,7 +78,7 @@ export default function DockyMenu(
                     <span className={`ms-3`}>{label}</span>
                 </div>
                 <div className='flex'>
-                    {getToolsByType(getTreeByKey(itemKey))}
+                    {getToolsByType(getTreeByKey(itemKey as string))}
                 </div>
             </div>
         </ListGroupItem >
@@ -76,7 +94,7 @@ export default function DockyMenu(
         return formated;
     }
 
-    const getformatedTree = (trees: IPropertiesTable[]) => {
+    const getFormatedTree = (trees: IPropertiesTable[]) => {
         const formated: TreeNode[] = [];
         return FormatedTree(trees, formated);
     }
@@ -108,17 +126,17 @@ export default function DockyMenu(
     const EditTools = (slug: string) => (
         <DynamicIcon name="file-pen-line" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            onClick={() => { onEditAction(slug) }} />
+            onClick={() => { if (onEditAction) onEditAction(slug) }} />
     );
     const AddTools = (id: number, type: PropertyTreeType) => (
         <DynamicIcon name="list-plus" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:group-hover:text-white"
-            onClick={() => { onAddAction(id, type) }} />
+            onClick={() => { if (onAddAction) onAddAction(id, type) }} />
     );
     const AddDivTools = (id: number, type: PropertyTreeType) => (
         <DynamicIcon name="folder-plus" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            onClick={() => { onAddDivAction(id, type) }} />
+            onClick={() => { if (onAddDivAction) onAddDivAction(id, type) }} />
     );
 
     // const getMenuItemToolBar = (item: IPropertiesTable) => {
@@ -142,52 +160,52 @@ export default function DockyMenu(
                 ret = (<>{ }</>);
                 break;
             case PropertyTreeType.AdminUser:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.AdminHomePage:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.AdminLibrary:
                 ret = (<>{ }</>);
                 break;
             case PropertyTreeType.AdminLibraryDocky:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.AdminLibraryDockyDiv:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.AdminDocky:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.AdminLibraryArticle:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.AdminLibraryArticleDiv:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.AdminArticle:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.Library:
                 ret = (<>{ }</>);
                 break;
             case PropertyTreeType.LibraryDocky:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.LibraryDockyDiv:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.Docky:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.LibraryArticle:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.LibraryArticleDiv:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.Article:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.Calendar:
                 ret = (<>{ }</>);
@@ -196,19 +214,19 @@ export default function DockyMenu(
                 ret = (<>{ }</>);
                 break;
             case PropertyTreeType.CalendarUpComming:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.CalendarEvent:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             case PropertyTreeType.Events:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.EventsDiv:
-                ret = (<>{AddTools(item.id as number, item.type)}{AddDivTools(item.id as number, item.type)}</>);
+                ret = (<>{onAddAction ? AddTools(item.id as number, item.type) : ''}{onAddDivAction ? AddDivTools(item.id as number, item.type) : ''}</>);
                 break;
             case PropertyTreeType.Event:
-                ret = (<>{EditTools(item.id ? item.id.toString() : item.content)}</>);
+                ret = (<>{onEditAction ? EditTools(item.id ? item.id.toString() : item.content) : ''}</>);
                 break;
             default:
                 throw new Error('PropertyTreeType Type Unknown !!')
@@ -217,9 +235,11 @@ export default function DockyMenu(
     }
     return (
         <TreeMenu
-            data={getformatedTree(trees)}
+            data={getFormatedTree(trees)}
             onClickItem={({ key, label, ...props }) => {
                 console.log(`TreeMenu Click: ${key}, ${label}, ${JSON.stringify(props)}`);
+                if (onClickAction) onClickAction(key);
+
             }}
             debounceTime={125}
         >
@@ -227,20 +247,21 @@ export default function DockyMenu(
                 return (
                     <>
                         <Input
-                            onChange={(e) => search(e.target.value)}
+                            onChange={(e) => search && search(e.target.value)}
                             placeholder="Search element.."
                         />
                         <ListGroup>
-                            {items.map((props) => {
+                            {items.map((props, index) => {
                                 props.itemKey = props.key;
-                                const newProps = { ...props, key: undefined };
-                                delete newProps.key;
+                                //const newProps = { ...props, key: undefined };
+                                //delete newProps.key;
+                                const { key, ...newProps } = props; // <-- retire complètement la clé 'key'
                                 return (
                                     // You might need to wrap the third-party component to consume the props
                                     // check the story as an example
                                     // https://github.com/iannbing/react-simple-tree-menu/blob/master/stories/index.stories.js
                                     // <ListGroupItem {...props}> {props.label} </ListGroupItem>
-                                    <ListItem key={`li_${props.key}`} {...newProps} />
+                                    <ListItem key={`li_${props.key}-${index}}`} {...newProps} />
                                 )
                             })}
                         </ListGroup>

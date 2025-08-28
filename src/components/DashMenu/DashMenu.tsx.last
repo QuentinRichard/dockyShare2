@@ -40,7 +40,7 @@ export default function DashMenu() {
         return formated;
     }
 
-    const getformatedTree = (trees: IPropertiesTable[]) => {
+    const getFormatedTree = (trees: IPropertiesTable[]) => {
         const formated: TreeNode[] = [];
         return FormatedTree(trees, formated);
     }
@@ -52,7 +52,7 @@ export default function DashMenu() {
             aria-label="Sidebar"
         >
             <TreeMenu
-                data={getformatedTree(trees)}
+                data={getFormatedTree(trees)}
                 onClickItem={({ key, label, ...props }) => {
                     console.log(key, label, props);
                 }}

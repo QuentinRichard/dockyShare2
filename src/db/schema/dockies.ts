@@ -1,30 +1,26 @@
 import { usersTable } from '@/db/schema/user';
 import { relations } from 'drizzle-orm';
 import { integer, jsonb, pgEnum, pgTable, primaryKey, serial, text } from "drizzle-orm/pg-core";
-import { propertiesTable } from './property';
+import { propertiesTable, PropertyTreeType } from './property';
 
 export enum DockyFileTypeEnum {
-    Docky = 'Docky',
-    Article = 'Article',
+    Docky = PropertyTreeType.Docky,
+    Article = PropertyTreeType.Article,
 }
 
-export enum DockyFileDefEnum {
-    HomePage = 'HomePage',
-    Docky = 'Docky',
-    Article = 'Article',
-    App = 'App'
-}
 export enum DockyFileCatEnum {
     //Le catégorie de Docky
     Docky_HomePage = 'HomePage',
     Docky_Perso = 'Perso',
     //Le catégorie d'article
     Article_MD = 'MarkDown',
+    Article_Graph = 'Graph',
     Article_Board = 'Board',
     Article_IMG = 'Img',
     Article_AUDIO = 'Audio',
     Article_VIDEO = 'video',
-    Article_Survey = 'Survey'
+    Article_Survey = 'Survey',
+    Article_App = 'App', // TODO exemple for next step
 }
 
 export const dockyFileTypeEnum = pgEnum(
@@ -71,6 +67,18 @@ export interface UpdateDockyFileData {
     treeId: number
     children?: DockyFileDataChildren[]
 }
+export interface PostDockyFileData {
+    name: string
+    description: string
+    isPublic: number
+    type: DockyFileTypeEnum
+    cat: DockyFileCatEnum | string | any
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    data: DockyFileData | any
+    treeId: number
+    children?: DockyFileDataChildren[]
+}
+
 
 
 // Table principale

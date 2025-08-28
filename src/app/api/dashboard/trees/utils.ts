@@ -16,7 +16,7 @@ function mergeDockyToTree(dockies: DockyFileData[], trees: Map<number, IProperti
                     name: dock.name,
                     icon: 'book-marked',
                     type: propType,
-                    content: dock.slug,
+                    content: dock.slug as string,
                     parentId: tree.id,
                     children: [],
                 })
@@ -25,7 +25,7 @@ function mergeDockyToTree(dockies: DockyFileData[], trees: Map<number, IProperti
     })
 }
 
-export async function addDockyToTrees(userId: number, trees: Map<number, IPropertiesTable>, type?: DockyFileTypeEnum) {
+export async function addDockyToTrees(userId: number, trees: Map<number, IPropertiesTable>, type?: DockyFileTypeEnum | null) {
     const dockies = await getDockies(userId, type);
 
     mergeDockyToTree(dockies, trees);

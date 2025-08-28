@@ -1,6 +1,7 @@
+import { useTreesDefinition } from '@/app/lib/definition';
 import dbConnexion from '@/db/connexion';
-import { IPropertiesTable, propertiesTable } from '@/db/schema/property';
-import { eq } from 'drizzle-orm';
+import { IPropertiesTable, propertiesTable, PropertyTreeType } from '@/db/schema/property';
+import { and, eq, inArray } from 'drizzle-orm';
 import { console } from 'inspector';
 
 
@@ -12,28 +13,54 @@ export async function sortTrees(trees: IPropertiesTable[]): Promise<{ flat: Map<
 
   // Préparer une entrée pour chaque noeud
   trees.forEach(item => {
-    map.set(item.id, { ...item, children: [] });
+    map.set(item!.id as number, { ...item, children: [] });
   });
 
   // Relier enfants ↔ parents
   trees.forEach(item => {
-    const node = map.get(item.id);
+    const node = map.get(item!.id as number);
     if (item.parentId == null) {
       // Racine (pas de parent)
-      roots.push(node);
+      roots.push(node as IPropertiesTable);
     } else {
       const parent = map.get(item.parentId);
       if (parent) {
-        parent.children.push(node);
+        parent.children = parent.children || [];
+        parent.children.push(node as IPropertiesTable);
       }
     }
   });
 
   return { flat: map, sorted: roots };
 }
-
-export async function getTrees(userId: number): Promise<IPropertiesTable[]> {
+function getGroupOfType(type: useTreesDefinition) {
+  console.log(useTreesDefinition.FullTree, useTreesDefinition.TreeArticle);
+  console.log(useTreesDefinition);
+  switch (type) {
+    case useTreesDefinition[useTreesDefinition.TreeDocky]:
+    case useTreesDefinition[useTreesDefinition.FullTreeDocky]:
+      return [
+        PropertyTreeType.Library, PropertyTreeType.LibraryDocky,
+        PropertyTreeType.LibraryDockyDiv, PropertyTreeType.Docky,
+      ]
+    case useTreesDefinition[useTreesDefinition.TreeArticle]:
+    case useTreesDefinition[useTreesDefinition.FullTreeArticle]:
+      return [
+        PropertyTreeType.Library, PropertyTreeType.LibraryArticle,
+        PropertyTreeType.LibraryArticleDiv, PropertyTreeType.Article,
+      ]
+    case useTreesDefinition[useTreesDefinition.FullTree]:
+      return undefined;
+    case useTreesDefinition[useTreesDefinition.Tree]:
+    //case useTreesDefinition.FullTree:
+    default:
+      return undefined;
+  }
+}
+export async function getTrees(userId: number, type: useTreesDefinition | undefined): Promise<IPropertiesTable[]> {
   try {
+    const typeArray = getGroupOfType(type!);
+
     const result = await dbConnexion.query.propertiesTable.findMany({
       // with: {
       //   parentId: true,   // liste des users invités par ce user
@@ -47,7 +74,7 @@ export async function getTrees(userId: number): Promise<IPropertiesTable[]> {
         content: true,
         parentId: true,
       },
-      where: eq(propertiesTable.userId, userId)
+      where: (type && typeArray) ? and(eq(propertiesTable.userId, userId), inArray(propertiesTable.type, typeArray)) : eq(propertiesTable.userId, userId)
     });
     return result as unknown as IPropertiesTable[];
   } catch (e) {
@@ -76,8 +103,8 @@ export async function getTree(treeId: number): Promise<IPropertiesTable | undefi
   }
 }
 
-export async function getSortedTreesList(userId: number) {
-  const list = await getTrees(userId);
+export async function getSortedTreesList(userId: number, type: useTreesDefinition | undefined) {
+  const list = await getTrees(userId, type);
   return await sortTrees(list);
 }
 

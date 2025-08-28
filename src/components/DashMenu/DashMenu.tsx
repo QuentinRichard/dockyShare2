@@ -1,10 +1,9 @@
 import '@/../node_modules/react-simple-tree-menu/dist/main.css';
 import { useDockyShareContext } from '@/app/dashboard/context';
+import CreateModal, { getModalType, ModalProps } from '@/components/Modal/CreateModal';
 import { PropertyTreeType } from '@/db/schema/property';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import CreateModal, { getModalType, ModalProps } from '../Modal/CreateModal';
 import DockyMenu from './DockyMenu';
 
 
@@ -48,8 +47,9 @@ export default function DashMenu(props: DashMenuProps) {
             title: 'Ajouter un élèment'
         });
     }
-    const onModalActionResult = (state: boolean, msg: string) => {
+    const onModalActionResult = (state: boolean, msg: string | undefined) => {
         setModalProps({ ...modalProps, open: false });
+        if (msg === undefined) return;
         if (state)
             toast.success(msg);
         else
@@ -63,7 +63,7 @@ export default function DashMenu(props: DashMenuProps) {
             className="h-full border-r border-black transition-all"
             aria-label="Sidebar"
         >
-            {DockyMenu(onEditAction, onAddDivAction, onAddAction, trees)}
+            {DockyMenu(trees, onEditAction, onAddDivAction, onAddAction, undefined)}
             <CreateModal {...modalProps} />
         </div >
 

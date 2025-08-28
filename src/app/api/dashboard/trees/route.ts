@@ -1,3 +1,4 @@
+import { useTreesDefinition } from '@/app/lib/definition';
 import { TreePutRequestSchema, TreeRequestSchema } from '@/app/lib/interfaces/treesRequest';
 import { getSession } from '@/app/lib/session';
 import { DockyFileTypeEnum } from '@/db/schema/dockies';
@@ -6,31 +7,44 @@ import { addTree, getSortedTreesList, getTree, updateTree } from '@/repositories
 import { NextRequest, NextResponse } from 'next/server';
 import { addDockyToTrees } from './utils';
 
+function convertTreeType(type: useTreesDefinition | null): DockyFileTypeEnum | null {
+    switch (type) {
+        case useTreesDefinition.TreeDocky:
+        case useTreesDefinition.FullTreeDocky:
+            return DockyFileTypeEnum.Docky;
+            break;
+        case useTreesDefinition.TreeArticle:
+        case useTreesDefinition.FullTreeArticle:
+            return DockyFileTypeEnum.Article;
+            break;
+        default:
+            return null;
+    }
+}
+
 export async function GET(request: NextRequest) {
     const session = await getSession();
 
-    const type = request.nextUrl.searchParams.get("type")
-    console.log(type);
-    /**
-     * Tree type :
-     * 1 : Tree : TreeWithout doky
-     * 2 : FullTree: Tree With all doky Items
-     * 3 : Doky : Tree with doky only 
-     * 4 : Article : Tree with article only
-     * 5 : ..... Like Event
-     */
+    const type = request.nextUrl.searchParams.get("type");
 
     // Process the response with type
-    const trees = await getSortedTreesList(session?.userId!);
-    if (type == 'FullTree') {
-        await addDockyToTrees(session?.userId!, trees.flat);
+    //TODO use Rules to retrieve Admin Trees
+    const TypeDef = type as unknown as useTreesDefinition;
+    const trees = await getSortedTreesList(session?.userId as number, TypeDef);
+    switch (TypeDef) {
+        //Tree, TreeDocky, TreeArticle, FullTree, FullTreeDocky, FullTreeArticle
+        case useTreesDefinition.Tree:
+        case useTreesDefinition.TreeDocky:
+        case useTreesDefinition.TreeArticle:
+            break;
+        case useTreesDefinition.FullTree:
+            await addDockyToTrees(session?.userId as number, trees.flat);
+        case useTreesDefinition.FullTreeDocky:
+        case useTreesDefinition.FullTreeArticle:
+        default:
+            await addDockyToTrees(session?.userId as number, trees.flat, convertTreeType(TypeDef));
     }
-    else if (type == 'Docky') {
-        await addDockyToTrees(session?.userId!, trees.flat, DockyFileTypeEnum.Docky);
-    }
-    else if (type == 'Article') {
-        await addDockyToTrees(session?.userId!, trees.flat, DockyFileTypeEnum.Article);
-    }
+
     //Type=Tree by default
     return NextResponse.json(trees.sorted);
 }
@@ -71,7 +85,7 @@ export async function POST(request: Request) {
     }
     const id = await addTree(prop);
 
-    return NextResponse.json({ data: (await getSortedTreesList(session?.userId)).sorted, new: id });
+    return NextResponse.json({ data: (await getSortedTreesList(session?.userId as number, undefined)).sorted, new: id });
 }
 
 export async function PUT(request: Request) {
