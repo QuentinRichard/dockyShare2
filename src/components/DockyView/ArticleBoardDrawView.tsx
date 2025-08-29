@@ -16,10 +16,8 @@ export default function ArticleBoardDrawView(props: ViewContentProps) {
             }
             <div >
                 {props.data!.description && props.data.description}
-                b
             </div>
-            {/* onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }} */}
-            {props.toolbar && <props.toolbar slug={props.data.slug} nav={() => props.nav}></props.toolbar>}
+            {props.toolbar && <props.toolbar slug={props.data.slug} nav={props.nav}></props.toolbar>}
         </div >
     )
 }

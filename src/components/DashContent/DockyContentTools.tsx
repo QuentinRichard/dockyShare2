@@ -19,7 +19,12 @@ export function blobToBase64(blob: Blob) {
     });
 }
 
-export type DockyNavigation = (slug: string) => void
+export enum NavigationAction {
+    EditAction = 'EditAction',
+    ViewAction = 'ViewAction'
+}
+
+export type DockyNavigation = (slug: string, action: NavigationAction) => void
 
 export const emptyMD = `
 `;

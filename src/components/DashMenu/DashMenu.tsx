@@ -1,5 +1,6 @@
 import '@/../node_modules/react-simple-tree-menu/dist/main.css';
 import { useDockyShareContext } from '@/app/dashboard/context';
+import { NavigationAction } from '@/components/DashContent/DockyContentTools';
 import CreateModal, { getModalType, ModalProps } from '@/components/Modal/CreateModal';
 import { PropertyTreeType } from '@/db/schema/property';
 import { useState } from 'react';
@@ -8,7 +9,7 @@ import DockyMenu from './DockyMenu';
 
 
 export interface DashMenuProps {
-    navigation: (dockySlug: string) => void
+    navigation: (dockySlug: string, action: NavigationAction) => void
     activeSlug?: string
 }
 
@@ -18,7 +19,7 @@ export default function DashMenu(props: DashMenuProps) {
     const { trees } = useDockyShareContext();
 
     const onEditAction = (slug: string) => {
-        props!.navigation(slug);
+        props!.navigation(slug, NavigationAction.EditAction);
     }
 
     const onAddDivAction = (id: number, type: PropertyTreeType) => {

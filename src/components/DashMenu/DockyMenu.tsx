@@ -141,6 +141,9 @@ export default function DockyMenu(
             onClick={() => { if (onAddDivAction) onAddDivAction(id, type) }} />
     );
 
+    const getActiveSlug = (slug: string) => {
+        return slug;
+    }
 
     function getToolsByType(item: IPropertiesTable | undefined) {
         if (!item) return <></>;
@@ -226,7 +229,7 @@ export default function DockyMenu(
     return (
         <TreeMenu
             data={getFormatedTree(trees)}
-            activeKey={activeSlug ?? ""}
+            activeKey={activeSlug ?? getActiveSlug(activeSlug)}
             onClickItem={({ key, label, ...props }) => {
                 if (onClickAction) onClickAction(key);
 

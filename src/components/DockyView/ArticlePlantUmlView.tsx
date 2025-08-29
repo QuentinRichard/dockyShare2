@@ -21,7 +21,7 @@ export default function ArticlePlantUmlView(props: ViewContentProps) {
                 </div>
             </div>
             <div>
-                {props.toolbar && <props.toolbar slug={props.data.slug} nav={() => props.nav}></props.toolbar>}
+                {props.toolbar && <props.toolbar slug={props.data.slug} nav={props.nav}></props.toolbar>}
             </div>
         </div >
     )

@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 // import { ToastContainer } from 'react-toastify';
 import { useTrees } from '@/app/lib/uses';
 import DashContent from '@/components/DashContent/DashContent';
+import { NavigationAction } from '@/components/DashContent/DockyContentTools';
 import DashMenu from '@/components/DashMenu/DashMenu';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDockyShareContext } from './context';
 
 export default function Dashboard(props?: { slug?: string }) {
-    const [slugNavigation, setSlugNavigation] = useState(props?.slug ?? "");
+    const [slugNavigation, setSlugNavigation] = useState({ slug: props?.slug as string, action: NavigationAction.EditAction });
     const [isSet, setIsSet] = useState(false);
     const { setTrees } = useDockyShareContext();
     const treesSwr = useTrees();
@@ -27,6 +28,35 @@ export default function Dashboard(props?: { slug?: string }) {
     const [isResizing, setIsResizing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
+
+    // const [page, setPage] = useState("home");
+    // const [params, setParams] = useState<{ [key: string]: string }>({});
+    // const loadFromHash = () => {
+    //     const hash = window.location.hash.replace("#", "");
+    //     if (!hash) return;
+
+    //     const [route, query] = hash.split("?");
+    //     setPage(route);
+    //     console.log('loadFromHash', route, query)
+
+    //     if (query) {
+    //         const searchParams = new URLSearchParams(query);
+    //         const obj: { [key: string]: string } = {};
+    //         searchParams.forEach((value, key) => (obj[key] = value));
+    //         setParams(obj);
+    //     } else {
+    //         setParams({});
+    //     }
+    // };
+    // const navigate = (target: string, extraParams?: Record<string, string>) => {
+    //     let newHash = target;
+    //     if (extraParams) {
+    //         const query = new URLSearchParams(extraParams).toString();
+    //         newHash += "?" + query;
+    //     }
+    //     window.location.hash = newHash;
+    // };
+
     useEffect(() => {
         if (!isResizing) return;
 
@@ -39,7 +69,6 @@ export default function Dashboard(props?: { slug?: string }) {
                 setMenuWidth(width);
                 setContentWidth(rect.width - width - 2)
                 setContentHeight(rect.height)
-                console.log("#######", contentWidth, contentHeight)
             }
         };
         const handleMouseUp = () => {
@@ -52,12 +81,13 @@ export default function Dashboard(props?: { slug?: string }) {
         window.addEventListener("mouseup", handleMouseUp);
         document.body.style.cursor = "col-resize";
         document.body.classList.add("select-none");
-
+        //  window.addEventListener("hashchange", loadFromHash);
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("mouseup", handleMouseUp);
             document.body.style.cursor = "";
             document.body.classList.remove("select-none");
+            //  window.removeEventListener("hashchange", loadFromHash);
         };
     }, [isResizing]);
 
@@ -68,9 +98,10 @@ export default function Dashboard(props?: { slug?: string }) {
         }, 0)
     }
 
-    const onMenuNavigate = (slug: string) => {
+    const onMenuNavigate = (slug: string, action: NavigationAction) => {
         if (slug.length > 0)
-            setSlugNavigation(slug);
+            setSlugNavigation({ slug, action });
+        //navigate(slug)
     }
 
     return (
@@ -81,7 +112,7 @@ export default function Dashboard(props?: { slug?: string }) {
                 style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
             >
 
-                <DashMenu navigation={onMenuNavigate} activeSlug={slugNavigation} />
+                <DashMenu navigation={onMenuNavigate} activeSlug={slugNavigation.slug} />
                 {/* Poignée de redimensionnement */}
                 {/* <div
                     className="h-full w-2 flex items-center justify-center cursor-col-resize select-none z-20"
@@ -103,7 +134,7 @@ export default function Dashboard(props?: { slug?: string }) {
 
             {/* Contenu à droite */}
             <div id="right-panel" className="flex-1 min-w-[100px] h-full">
-                <DashContent slug={slugNavigation} navigation={onMenuNavigate} height={contentHeight} width={contentWidth} />
+                <DashContent slug={slugNavigation.slug} action={slugNavigation.action} navigation={onMenuNavigate} height={contentHeight} width={contentWidth} />
             </div>
 
             <ToastContainer position="bottom-center"
