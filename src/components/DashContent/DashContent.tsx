@@ -24,7 +24,7 @@ export default function DashContent(props: DashContentProps) {
 
     return (
         <div className="scroll-container p-4 bg-gray-100 h-full">
-            {props.action === NavigationAction.EditAction && data && props.slug.length > 0 ? getContentEditNode(data, props.height, props.width, dashContentEditToolbarbuilder) : <div className="p-4">loading...</div>} }
+            {props.action === NavigationAction.EditAction && data && props.slug.length > 0 ? getContentEditNode(data, props.height, props.width, dashContentEditToolbarbuilder) : <div className="p-4">loading...</div>}
             {props.action === NavigationAction.ViewAction && data && props.slug.length > 0 ? getContentViewNode(data, props.height, props.width, dashViewToolbarBuilder, nav) : <div className="p-4">loading...</div>}
         </div>
     );

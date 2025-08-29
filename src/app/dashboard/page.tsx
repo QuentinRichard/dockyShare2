@@ -15,10 +15,6 @@ export default function Dashboard(props?: { slug?: string }) {
     const { setTrees } = useDockyShareContext();
     const treesSwr = useTrees();
 
-
-    console.log('==> slugNavigation', slugNavigation)
-    console.log('==> window.location', window.location)
-
     // Largeur du menu redimensionnable
     const minWidth = 200;
     const minHeight = 750;

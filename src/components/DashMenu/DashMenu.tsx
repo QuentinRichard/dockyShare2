@@ -21,6 +21,9 @@ export default function DashMenu(props: DashMenuProps) {
     const onEditAction = (slug: string) => {
         props!.navigation(slug, NavigationAction.EditAction);
     }
+    const onViewAction = (slug: string) => {
+        props!.navigation(slug, NavigationAction.ViewAction);
+    }
 
     const onAddDivAction = (id: number, type: PropertyTreeType) => {
         setModalProps({
@@ -35,7 +38,6 @@ export default function DashMenu(props: DashMenuProps) {
             title: 'Ajouter un niveau'
         });
     }
-
     const onAddAction = (id: number, typep: PropertyTreeType) => {
         const type = getModalType(typep);
         setModalProps({
@@ -63,7 +65,7 @@ export default function DashMenu(props: DashMenuProps) {
             className="flex-1 h-full border-r border-black "
             aria-label="Sidebar"
         >
-            {DockyMenu(trees, onEditAction, onAddDivAction, onAddAction, undefined, props.activeSlug)}
+            {DockyMenu(trees, { onEditAction, onAddDivAction, onAddAction, onViewAction }, props.activeSlug)}
             <CreateModal {...modalProps} />
         </div >
 

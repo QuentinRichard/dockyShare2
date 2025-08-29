@@ -9,7 +9,7 @@ export default function ArticleBoardDrawView(props: ViewContentProps) {
     console.log('props.data!.data!', props.data!.data!)
 
     return (
-        <div className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto">
+        <div className="border-blue-400 border-2 w-full shrink p-4 overflow-auto">
 
             {props.data!.data!['content']!['imgSrc'] &&
                 <img src={props.data!.data!['content']!['imgSrc']} />

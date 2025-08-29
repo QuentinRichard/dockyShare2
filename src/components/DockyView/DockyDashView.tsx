@@ -9,7 +9,7 @@ import { dashViewToolbarBuilder, getContentViewNode, ViewContentProps } from "..
 export default function DockyDashView(props: ViewContentProps) {
 
     return (
-        <div className="border-gray-400 border-2 h-full w-full shrink">
+        <div className="border-gray-400 border-2  w-full shrink">
 
             <h1>
                 <p>Name: {props.data.description} - slug: {props.data.slug}</p>
