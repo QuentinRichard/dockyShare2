@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDockyShareContext } from './context';
 
-export default function DashboardIndex(props?: { slug?: string }) {
+export default function Dashboard(props?: { slug?: string }) {
     const [slugNavigation, setSlugNavigation] = useState(props?.slug ?? "");
     const [isSet, setIsSet] = useState(false);
     const { setTrees } = useDockyShareContext();
@@ -16,6 +16,7 @@ export default function DashboardIndex(props?: { slug?: string }) {
 
 
     console.log('==> slugNavigation', slugNavigation)
+    console.log('==> window.location', window.location)
 
     // Largeur du menu redimensionnable
     const minWidth = 200;

@@ -1,19 +1,10 @@
 'use client'
 
 import { DockyFileData } from "@/db/schema/dockies";
-import { DashEditContentToolbarProps, getContentEditNode } from "../DashContent/DockyContentTools";
+import { dashContentEditToolbarbuilder, getContentEditNode } from "../DashContent/DockyContentTools";
 import { ViewProps } from "./ViewProps";
 
 
-export function dashContentEditToolbarbuilder(props: DashEditContentToolbarProps) {
-    return (
-        <div className="border-b border-t border-gray-400 p-2 flex justify-center gap-2">
-            {props.onCancel && <button className="bg-amber-200 text-white px-4 py-2 rounded hover:bg-red-600" onClick={props.onCancel}>Annuler</button>}
-            {props.onSave && <button className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700" onClick={props.onSave}>Sauvegarder</button>}
-            Add other tool to Delete
-        </div>
-    );
-}
 export default function DockyDashEdit(props: ViewProps) {
     const onSave = async (content?: string) => {
         // const newData: UpdateDockyFileData = { ...props.data, data: { content, imgSrc: '' } };

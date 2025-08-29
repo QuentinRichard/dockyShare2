@@ -35,6 +35,15 @@ export interface DashEditContentToolbarProps {
 
 export type DashEditContentToolbarBuilder = (props: DashEditContentToolbarProps) => ReactNode
 
+export function dashContentEditToolbarbuilder(props: DashEditContentToolbarProps) {
+    return (
+        <div className="border-b border-t border-gray-400 p-2 flex justify-center gap-2">
+            {props.onCancel && <button className="bg-amber-200 text-white px-4 py-2 rounded hover:bg-red-600" onClick={props.onCancel}>Annuler</button>}
+            {props.onSave && <button className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700" onClick={props.onSave}>Sauvegarder</button>}
+            Add Delete Button
+        </div>
+    );
+}
 
 export function getContentEditNode(data: DockyFileData, height: number, width: number, toolsbarBuilder: DashEditContentToolbarBuilder): ReactNode {
     if (!data) return (<div>Pas de données</div>);
@@ -62,6 +71,18 @@ export interface DashViewContentToolbarProps {
     nav: DockyNavigation
 }
 export type DashViewContentToolbarBuilder = (props: DashViewContentToolbarProps) => ReactNode
+
+export function dashViewToolbarBuilder(props: DashViewContentToolbarProps) {
+    //TODO Nav mettre une action en position relatif afin de pouvoir passer en mode edite
+    const clickDebug = () => {
+        props.nav(props.slug)
+    }
+    return (
+        <div className="border-b border-t border-gray-400 p-2 flex justify-center gap-2">
+            <button className="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700" onClick={() => { clickDebug() }}>Editer</button>
+        </div >
+    );
+}
 
 export function getContentViewNode(data: DockyFileData, height: number, width: number, toolsbarBuilder: DashViewContentToolbarBuilder, nav: DockyNavigation): ReactNode {
     if (!data) return (<div>Pas de données</div>);
