@@ -36,7 +36,7 @@ function buildOptionSelectionforArticleCat(): ReactNode {
 
 export default function CreateArticleForm(props: ArticleFormProps) {
     const { setTrees } = useDockyShareContext();
-    const { data, isError, isLoading } = useTrees(useTreesDefinition.TreeArticle);
+    const { data, isLoading } = useTrees(useTreesDefinition.TreeArticle);
     const [parentId, setParentId] = useState(0);
 
     const onMenuClick = (id: number | string) => {

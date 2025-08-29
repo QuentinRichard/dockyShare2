@@ -16,7 +16,7 @@ export interface DashMenuProps {
 
 export default function DashMenu(props: DashMenuProps) {
     const [modalProps, setModalProps] = useState({} as ModalProps)
-    const { trees } = useDockyShareContext();
+    const { fullTrees } = useDockyShareContext();
 
     const onEditAction = (slug: string) => {
         props!.navigation(slug, NavigationAction.EditAction);
@@ -31,7 +31,7 @@ export default function DashMenu(props: DashMenuProps) {
             open: true,
             type: 'Div',
             data: {
-                trees,
+                fullTrees,
                 type,
                 parentId: id
             },
@@ -45,7 +45,7 @@ export default function DashMenu(props: DashMenuProps) {
             open: true,
             type,
             data: {
-                trees,
+                fullTrees,
                 id
             },
             title: 'Ajouter un élèment'
@@ -65,7 +65,7 @@ export default function DashMenu(props: DashMenuProps) {
             className="flex-1 h-full border-r border-black "
             aria-label="Sidebar"
         >
-            {DockyMenu(trees, { onEditAction, onAddDivAction, onAddAction, onViewAction }, props.activeSlug)}
+            {fullTrees && DockyMenu(fullTrees, { onEditAction, onAddDivAction, onAddAction, onViewAction }, props.activeSlug)}
             <CreateModal {...modalProps} />
         </div >
 

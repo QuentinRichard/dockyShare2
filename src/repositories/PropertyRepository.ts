@@ -55,7 +55,7 @@ function getGroupOfType(type: useTreesDefinition) {
       return undefined;
   }
 }
-export async function getTrees(userId: number, type: useTreesDefinition | undefined): Promise<IPropertiesTable[]> {
+export async function getTrees(userId: number, type?: useTreesDefinition): Promise<IPropertiesTable[]> {
   try {
     const typeArray = getGroupOfType(type!);
 
@@ -101,7 +101,7 @@ export async function getTree(treeId: number): Promise<IPropertiesTable | undefi
   }
 }
 
-export async function getSortedTreesList(userId: number, type: useTreesDefinition | undefined) {
+export async function getSortedTreesList(userId: number, type?: useTreesDefinition) {
   const list = await getTrees(userId, type);
   return await sortTrees(list);
 }

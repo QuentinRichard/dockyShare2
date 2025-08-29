@@ -24,7 +24,6 @@ import { ViewProps } from './ViewProps';
 
 
 export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
-    const mdStr = `# This is a H1  \n## This is a H2  \n###### This is a H6`;
     const [markdown, setMarkdown] = useState(props.data!.data['content'] || emptyMD);
     const [key, setKey] = useState(Date.now());
 

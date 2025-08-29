@@ -15,7 +15,7 @@ export interface DashContentProps {
 
 export default function DashContent(props: DashContentProps) {
 
-    const { data, isError, isLoading } = useGetDockeyBySlug(props.slug);
+    const { data } = useGetDockeyBySlug(props.slug);
 
     const nav = (slug: string, action: NavigationAction) => {
         if (props.navigation) props.navigation(slug, action);

@@ -26,12 +26,14 @@ export default function DashbordLayout({
 }>) {
     const [userRules, setUserRules] = useState<Rules>(defaultUserRules);
     const [trees, setTrees] = useState<IPropertiesTable[]>([]);
+    const [fullTrees, setFullTrees] = useState<IPropertiesTable[]>([]);
     const [dockies, setDockies] = useState<DockyFileData[]>([]);
     const [articles, setArticles] = useState<DockyFileData[]>([]);
 
     const dockyShareContext: DockyContext = {
         userRules, setUserRules,
         trees, setTrees,
+        fullTrees, setFullTrees,
         dockies, setDockies,
         articles, setArticles
     }

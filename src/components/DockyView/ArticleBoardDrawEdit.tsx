@@ -92,7 +92,7 @@ function SnapshotToolbar(props: { onSave: (obj: BoradDrawSnaphot) => void, conte
 
 
 export default function ArticleBoardDrawEdit(props: ViewProps) {
-    const [snapshot, setSnapshot] = useState(props.data!.data['content'] || { session: jsonSnapshot, imgSrc: '' })
+    const [snapshot] = useState(props.data!.data['content'] || { session: jsonSnapshot, imgSrc: '' })
     const [height, setHeight] = useState(0)
     const [width, setWidth] = useState(0)
     const tlDrawRef = useRef<HTMLDivElement>(null);
