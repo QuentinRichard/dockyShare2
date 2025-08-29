@@ -55,8 +55,6 @@ export default function DashMenu(props: DashMenuProps) {
         else
             toast.error(msg);
     }
-
-    console.log("trees", trees);
     return (
         <div
             id="sidebar-multi-level-sidebar"

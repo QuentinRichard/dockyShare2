@@ -4,16 +4,18 @@ TODO :
 => Use react-markdown as viewer 
 => build the plantUml edit+viewer
 => i18N
-
+=> TreeMenu add item's icons
 
 Refactor:
 ---------
-replace Switch/case by maps
+Replace Switch/case by maps
 Route for GetCreateUpdata Docky/Article 
     Faire des routes qui fournissent la données
     Ajouter une pour le merge de contenu sur l'arbre
     C'est La page qui merge les données
-
+Refaire la partie Dashboard pour quelle soit en mode SPA et navigable avec le browser
+    route dashboard/edit/{slug}
+    route dashboard/view/{slug}
 
 
 Docky:

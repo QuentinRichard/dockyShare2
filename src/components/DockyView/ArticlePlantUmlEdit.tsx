@@ -1,9 +1,9 @@
 
 
 import { callDockiesPut } from '@/app/lib/uses';
+import { emptyMD } from '@/components/DashContent/DockyContentTools';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
 import { useEffect, useRef, useState } from 'react';
-import { emptyMD } from './commun';
 import { ViewProps } from './ViewProps';
 
 // import plantumlEncoder from 'plantuml-encoder';
@@ -74,13 +74,11 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
 
         debounceRef.current = setTimeout(async () => {
             const encoded = plantumlEncoder.encode(md);
-            setPlantUmlSrc(md);
-            //setEncoded(encoded);
             const blob = await fetch(`http://www.plantuml.com/plantuml/img/${encoded}`)
                 .then(res => { return res.blob() })
 
             const base64 = await blobToBase64(blob) as string;
-            imageSrcRef.current!.setAttribute('src', URL.createObjectURL(blob));
+            //imageSrcRef.current!.setAttribute('src', URL.createObjectURL(blob));
             console.log('base64', base64);
             setEncoded(encoded);
             setImgSrc(base64);
@@ -97,6 +95,7 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
         setPlantUmlSrc(props.data!.data['content'] || emptyMD);
         setEncoded(props.data!.data['encoded'] || emptyMD);
         setImgSrc(props.data!.data['imgSrc'] || emptyMD);
+        setKey(Date.now());
         console.log("Cancel");
 
     }
@@ -132,8 +131,8 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
                 </div>
 
                 {/* Contenu à droite */}
-                <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800">
-                    <img key={key} ref={imageSrcRef} src={imgSrc} />
+                <div className="h-full w-full min-h-0 flex overflow-auto bg-red-600 dark:bg-gray-800 ">
+                    <img key={key} ref={imageSrcRef} src={imgSrc} className="h-full w-full" />
                     {/* src={`http://www.plantuml.com/plantuml/img/${encoded}`} */}
                 </div>
 

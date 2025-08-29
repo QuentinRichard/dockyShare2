@@ -80,7 +80,7 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
         return SnapshotToolbar({ onSave, content: snapshot })
     }
     const onSave = async (content: string) => {
-        const newData: UpdateDockyFileData = { ...props.data, data: { content } };
+        const newData: UpdateDockyFileData = { ...props.data, data: { content, imgSrc: '' } };
         await callDockiesPut(newData);
         console.log("On Server")
     }

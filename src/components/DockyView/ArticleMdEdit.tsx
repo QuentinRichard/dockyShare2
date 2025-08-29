@@ -7,6 +7,7 @@ import '@/../node_modules/@mdxeditor/editor/dist/style.css';
 import './style.css';
 
 import { callDockiesPut } from '@/app/lib/uses';
+import { emptyMD } from '@/components/DashContent/DockyContentTools';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
 import {
     BlockTypeSelect, BoldItalicUnderlineToggles,
@@ -20,7 +21,6 @@ import {
 } from '@mdxeditor/editor';
 import { useState } from 'react';
 import { ViewProps } from './ViewProps';
-import { emptyMD } from './commun';
 
 
 export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
