@@ -2,10 +2,13 @@
 
 import { callDockiesPut } from '@/app/lib/uses';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
-import plantumlEncoder from 'plantuml-encoder';
 import { useEffect, useRef, useState } from 'react';
 import { emptyMD } from './commun';
 import { ViewProps } from './ViewProps';
+
+// import plantumlEncoder from 'plantuml-encoder';
+/* eslint-disable @typescript-eslint/no-require-imports */
+const plantumlEncoder = require('plantuml-encoder')
 
 
 
@@ -14,7 +17,7 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
     const [encoded, setEncoded] = useState(props.data!.data['encoded'] || emptyMD);
     const [imgSrc, setImgSrc] = useState(props.data!.data['imgSrc'] || emptyMD);
     const [key, setKey] = useState(Date.now());
-    const imageSrcRef = useRef<HTMLDivElement>(null);
+    const imageSrcRef = useRef<HTMLImageElement>(null);
 
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -77,8 +80,7 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
                 .then(res => { return res.blob() })
 
             const base64 = await blobToBase64(blob) as string;
-            let objectURL = URL.createObjectURL(blob);
-            imageSrcRef.current!.setAttribute('src', objectURL);
+            imageSrcRef.current!.setAttribute('src', URL.createObjectURL(blob));
             console.log('base64', base64);
             setEncoded(encoded);
             setImgSrc(base64);
@@ -101,7 +103,7 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
     return (
         <div className="border-gray-400 border-2 w-full flex-1 h-full shrink p-4 overflow-auto">
 
-            <div ref={containerRef} className="h-full w-full  flex flex-row relative" id='dashboard'>
+            <div ref={containerRef} className="h-full w-full  flex flex-row relative" style={{ height: props.height, width: props.width }} id='dashboard'>
                 {/* Menu à gauche + poignée */}
                 <div
                     className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"

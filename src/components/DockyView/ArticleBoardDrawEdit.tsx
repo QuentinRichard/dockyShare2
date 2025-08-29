@@ -3,18 +3,19 @@
 import { callDockiesPut } from '@/app/lib/uses';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
 import { useCallback, useEffect, useState } from 'react';
-import { TLEditorSnapshot, Tldraw, getSnapshot, loadSnapshot, useEditor } from 'tldraw';
+import { TLEditorSnapshot, TLUserPreferences, Tldraw, getSnapshot, loadSnapshot, useEditor, useTldrawUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { ViewProps } from './ViewProps';
 
 import _jsonSnapshot from './boardDrawInit.json';
 
-const jsonSnapshot = _jsonSnapshot as any as TLEditorSnapshot
+/* @typescript-eslint/no-explicit-any */
+const jsonSnapshot = _jsonSnapshot as unknown as TLEditorSnapshot
 
 
 function SnapshotToolbar(props: { onSave: (content: string) => void, content: string }) {
     const editor = useEditor()
-    const [snapshot] = useState(props.content ? JSON.parse(props.content) : undefined)
+    const [snapshot] = useState(props.content ? JSON.parse(props.content) : jsonSnapshot)
 
     const save = useCallback(async () => {
         const { document, session } = getSnapshot(editor.store)
@@ -65,8 +66,15 @@ function SnapshotToolbar(props: { onSave: (content: string) => void, content: st
     )
 }
 
+
 export default function ArticleBoardDrawEdit(props: ViewProps) {
     const [snapshot, setSnapshot] = useState(props.data!.data['content'] || jsonSnapshot)
+
+    const [userPreferences, setUserPreferences] = useState<TLUserPreferences>({
+        id: props.data.slug,
+        isDynamicSizeMode: true,
+    })
+    const user = useTldrawUser({ userPreferences, setUserPreferences })
 
     const onSnapshotToolbarProvider = () => {
         return SnapshotToolbar({ onSave, content: snapshot })
@@ -78,12 +86,11 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
     }
 
     return (
-        <div className="border-gray-400 border-2 flex-1 w-full  h-full shrink p-4 overflow-auto">
-
+        <div className="border-gray-400 border-2 flex-1 w-full  h-full shrink p-0 overflow-auto">
             {
                 // props && props.data!.data['content'] && props.data!.data['content'].length > 0 ?
-                <div style={{ position: 'fixed', inset: 0 }} className="tldraw__editor"
-                    style={{ height: 750 }}>
+                //, width: props.width
+                <div style={{ position: 'fixed', inset: `0 0 0 450`, height: props.height, width: props.width + 450 }} className="tldraw__editor">
 
                     {/* snapshot={jsonSnapshot} */}
                     <Tldraw

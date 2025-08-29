@@ -59,7 +59,7 @@ export function useDockies() {
   }
 }
 
-export function useGetDockeySlug(slug: string) {
+export function useGetDockeyBySlug(slug: string) {
   //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies?slug=${slug}`, fetcher)
   const { data, error, isLoading } = useSWR(slug.length > 0 ? [`/api/dashboard/dockies?slug=${slug}`] : null, fetcher)
 

@@ -16,7 +16,10 @@ export default function Dashboard() {
 
     // Largeur du menu redimensionnable
     const minWidth = 200;
+    const minHeight = 750;
     const [menuWidth, setMenuWidth] = useState(minWidth);
+    const [contentWidth, setContentWidth] = useState(minWidth);
+    const [contentHeight, setContentHeight] = useState(minHeight);
     const [isResizing, setIsResizing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +31,11 @@ export default function Dashboard() {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
                 const x = e.clientX - rect.left;
-                setMenuWidth(Math.max(180, Math.min(x, rect.width)));
+                const width = Math.max(180, Math.min(x, rect.width))
+                setMenuWidth(width);
+                setContentWidth(rect.width - width - 2)
+                setContentHeight(rect.height)
+                console.log("#######", contentWidth, contentHeight)
             }
         };
         const handleMouseUp = () => {
@@ -92,7 +99,7 @@ export default function Dashboard() {
 
             {/* Contenu à droite */}
             <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800 relative">
-                <DashContent slug={slugNavigation} />
+                <DashContent slug={slugNavigation} height={contentHeight} width={contentWidth} />
             </div>
 
             <ToastContainer position="bottom-center"

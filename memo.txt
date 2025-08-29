@@ -6,11 +6,13 @@ TODO :
 => i18N
 
 
-
-Note
---------------------
-Les Dockies [Page, Article] sont gérer dans une table
-Les Event et Calendar sont egalement gérer dans une autre page
+Refactor:
+---------
+replace Switch/case by maps
+Route for GetCreateUpdata Docky/Article 
+    Faire des routes qui fournissent la données
+    Ajouter une pour le merge de contenu sur l'arbre
+    C'est La page qui merge les données
 
 
 

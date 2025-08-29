@@ -48,70 +48,73 @@ export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
         console.log("Cancel");
     }
     return (
-        <div key={`${key}`} className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto">
-            {/* //TODO Add all property formular ;) -)*/}
-            {markdown &&
-                <MDXEditor
-                    contentEditableClassName="prose"
-                    markdown={markdown}
-                    onChange={(md) => { console.log(`md[${md}]`); onContentChange(md) }}
-                    plugins={[
-                        headingsPlugin(),
-                        listsPlugin(),
-                        quotePlugin(),
-                        linkPlugin(),
-                        linkDialogPlugin(),
-                        tablePlugin(),
+        <div key={`${key}`} className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto" >
 
-                        imagePlugin({
-                            imageUploadHandler: () => {
-                                return Promise.resolve('https://picsum.photos/200/300')
-                            },
-                            imageAutocompleteSuggestions: ['https://picsum.photos/200/300', 'https://picsum.photos/200']
-                        }),
-                        thematicBreakPlugin(),
-                        markdownShortcutPlugin(),
-                        codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
-                        codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS' } }),
-                        diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
-                        toolbarPlugin({
-                            toolbarClassName: 'my-classname',
-                            toolbarContents: () => (
-                                <>
-                                    <UndoRedo />
-                                    <InsertThematicBreak />
-                                    <BlockTypeSelect />
-                                    <BoldItalicUnderlineToggles />
-                                    <CodeToggle />
-                                    <CreateLink />
-                                    <InsertImage />
-                                    <InsertTable />
-                                    <ListsToggle />
-                                    <ConditionalContents
-                                        options={[
-                                            { when: (editor) => editor?.editorType === 'codeblock', contents: () => <ChangeCodeMirrorLanguage /> },
-                                            { when: (editor) => editor?.editorType === 'sandpack', contents: () => <ShowSandpackInfo /> },
-                                            {
-                                                fallback: () => (
-                                                    <>
-                                                        <InsertCodeBlock />
-                                                    </>
-                                                )
-                                            }
-                                        ]}
-                                    />
+            <div className="flex flex-col relative" style={{ height: props.height, width: props.width }} >
+                {/* //TODO Add all property formular ;) -)*/}
+                {markdown &&
+                    <MDXEditor
+                        contentEditableClassName="prose"
+                        markdown={markdown}
+                        onChange={(md) => { console.log(`md[${md}]`); onContentChange(md) }}
+                        plugins={[
+                            headingsPlugin(),
+                            listsPlugin(),
+                            quotePlugin(),
+                            linkPlugin(),
+                            linkDialogPlugin(),
+                            tablePlugin(),
 
-                                </>
-                            )
-                        })
-                    ]}
-                />}
-            {props.toolbar && <props.toolbar onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }}></props.toolbar>}
+                            imagePlugin({
+                                imageUploadHandler: () => {
+                                    return Promise.resolve('https://picsum.photos/200/300')
+                                },
+                                imageAutocompleteSuggestions: ['https://picsum.photos/200/300', 'https://picsum.photos/200']
+                            }),
+                            thematicBreakPlugin(),
+                            markdownShortcutPlugin(),
+                            codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+                            codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS' } }),
+                            diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
+                            toolbarPlugin({
+                                toolbarClassName: 'my-classname',
+                                toolbarContents: () => (
+                                    <>
+                                        <UndoRedo />
+                                        <InsertThematicBreak />
+                                        <BlockTypeSelect />
+                                        <BoldItalicUnderlineToggles />
+                                        <CodeToggle />
+                                        <CreateLink />
+                                        <InsertImage />
+                                        <InsertTable />
+                                        <ListsToggle />
+                                        <ConditionalContents
+                                            options={[
+                                                { when: (editor) => editor?.editorType === 'codeblock', contents: () => <ChangeCodeMirrorLanguage /> },
+                                                { when: (editor) => editor?.editorType === 'sandpack', contents: () => <ShowSandpackInfo /> },
+                                                {
+                                                    fallback: () => (
+                                                        <>
+                                                            <InsertCodeBlock />
+                                                        </>
+                                                    )
+                                                }
+                                            ]}
+                                        />
 
-            {/* ==> Note init:
+                                    </>
+                                )
+                            })
+                        ]}
+                    />}
+                {props.toolbar && <props.toolbar onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }}></props.toolbar>}
+
+                {/* ==> Note init:
             https://mdxeditor.dev/editor/docs/links
 
             */}
+            </div>
         </div>
     )
 }
