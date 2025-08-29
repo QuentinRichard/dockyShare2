@@ -11,6 +11,14 @@ import DockyDashEdit from "../DockyView/DockyDashEdit";
 import { ViewProps } from "../DockyView/ViewProps";
 
 
+export function blobToBase64(blob: Blob) {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
+
 export type DockyNavigation = (slug: string) => void
 
 export const emptyMD = `

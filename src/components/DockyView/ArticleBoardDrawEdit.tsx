@@ -3,34 +3,58 @@
 import { callDockiesPut } from '@/app/lib/uses';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { TLEditorSnapshot, TLUserPreferences, Tldraw, getSnapshot, loadSnapshot, useEditor, useTldrawUser } from 'tldraw';
+import { TLEditorSnapshot, TLImageExportOptions, TLUserPreferences, Tldraw, getSnapshot, loadSnapshot, useEditor, useTldrawUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { ViewProps } from './ViewProps';
 
+import { blobToBase64 } from '../DashContent/DockyContentTools';
 import _jsonSnapshot from './boardDrawInit.json';
 
 /* @typescript-eslint/no-explicit-any */
 const jsonSnapshot = _jsonSnapshot as unknown as TLEditorSnapshot
 
+interface BoradDrawSnaphot {
+    session: TLEditorSnapshot
+    imgSrc: string | unknown
+}
 
-function SnapshotToolbar(props: { onSave: (content: string) => void, content: string }) {
+function SnapshotToolbar(props: { onSave: (obj: BoradDrawSnaphot) => void, content: BoradDrawSnaphot }) {
     const editor = useEditor()
-    const [snapshot] = useState(props.content ? JSON.parse(props.content) : jsonSnapshot)
+    const [snapshot] = useState(props.content ? props.content : { session: jsonSnapshot })
+    const [opts, setOpts] = useState<TLImageExportOptions>({
+        scale: 1,
+        background: false,
+        padding: editor.options.defaultSvgPadding,
+    })
+
+    //const [box, setBox] = useState({ x: 0, y: 0, w: 0, h: 0 })
 
     const save = useCallback(async () => {
         const { document, session } = getSnapshot(editor.store)
-        console.log('document', JSON.stringify({ document, session }))
-        if (props.onSave) props.onSave(JSON.stringify({ document, session }))
+        const shapeIds = editor.getCurrentPageShapeIds()
+        if (shapeIds.size === 0) return alert('No shapes on the canvas')
+
+        const { blob } = await editor.toImage([...shapeIds], {
+            format: 'png',
+            ...opts,
+            // If we have numbers for all of the box values, we can use them as bounds
+            // bounds: Object.values(box).every((b) => !Number.isNaN(b))
+            //     ? new Box(box.x, box.y, box.w, box.h)
+            //     : undefined,
+        })
+        const imgSrc = await blobToBase64(blob);
+        console.log('document', imgSrc)
+        if (props.onSave) props.onSave({ session: { document, session }, imgSrc })
     }, [editor])
 
     const load = useCallback(() => {
-        loadSnapshot(editor.store, snapshot)
+        loadSnapshot(editor.store, snapshot.session)
     }, [editor])
 
     const [showCheckMark, setShowCheckMark] = useState(false)
     useEffect(() => {
         if (editor && snapshot)
-            loadSnapshot(editor.store, snapshot);
+            loadSnapshot(editor.store, snapshot.session);
 
         if (showCheckMark) {
             const timeout = setTimeout(() => {
@@ -68,7 +92,7 @@ function SnapshotToolbar(props: { onSave: (content: string) => void, content: st
 
 
 export default function ArticleBoardDrawEdit(props: ViewProps) {
-    const [snapshot, setSnapshot] = useState(props.data!.data['content'] || jsonSnapshot)
+    const [snapshot, setSnapshot] = useState(props.data!.data['content'] || { session: jsonSnapshot, imgSrc: '' })
     const [height, setHeight] = useState(0)
     const [width, setWidth] = useState(0)
     const tlDrawRef = useRef<HTMLDivElement>(null);
@@ -85,11 +109,13 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
         setWidth(rect.width);
 
     }, []);
+
+
     const onSnapshotToolbarProvider = () => {
         return SnapshotToolbar({ onSave, content: snapshot })
     }
     const onSave = async (content: string) => {
-        const newData: UpdateDockyFileData = { ...props.data, data: { content, imgSrc: '' } };
+        const newData: UpdateDockyFileData = { ...props.data, data: { content } };
         await callDockiesPut(newData);
         console.log("On Server")
     }
@@ -99,11 +125,11 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
             {
                 // props && props.data!.data['content'] && props.data!.data['content'].length > 0 ?
                 //, width: props.width
-                <div style={{ position: 'fixed', inset: `0 0 0 450`, height: height - 100, width: width }} className="tldraw__editor">
+                <div id="boardEditor" style={{ position: 'fixed', inset: `0 0 0 450`, height: height - 100, width: width }} className="tldraw__editor">
 
                     {/* snapshot={jsonSnapshot} */}
                     <Tldraw
-                        snapshot={JSON.parse(snapshot)}
+                        snapshot={snapshot}
                         components={{
                             SharePanel: onSnapshotToolbarProvider,
                         }}

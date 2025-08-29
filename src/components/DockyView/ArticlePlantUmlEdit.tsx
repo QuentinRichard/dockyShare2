@@ -1,7 +1,7 @@
 
 
 import { callDockiesPut } from '@/app/lib/uses';
-import { emptyMD } from '@/components/DashContent/DockyContentTools';
+import { blobToBase64, emptyMD } from '@/components/DashContent/DockyContentTools';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
 import { useEffect, useRef, useState } from 'react';
 import { ViewProps } from './ViewProps';
@@ -57,13 +57,7 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
             document.body.classList.remove("select-none");
         };
     }, [isResizing]);
-    function blobToBase64(blob: Blob) {
-        return new Promise((resolve, _) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-        });
-    }
+
     const onContentChange = async (md: string) => {
         if (md.length === 0) md = emptyMD;
 

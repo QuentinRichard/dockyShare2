@@ -141,18 +141,6 @@ export default function DockyMenu(
             onClick={() => { if (onAddDivAction) onAddDivAction(id, type) }} />
     );
 
-    // const getMenuItemToolBar = (item: IPropertiesTable) => {
-
-    //     return (<>
-    //         {getToolsByType(item)}
-    //         {/* ExpendSubMenu */}
-    //         {item.children && item.children!.length > 0 && item.id === expendedId &&
-    //             <DynamicIcon name="chevron-down" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-
-    //         {item.children && item.children!.length > 0 && item.id !== expendedId &&
-    //             <DynamicIcon name="chevron-right" size={44} className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />}
-    //     </>)
-    // }
 
     function getToolsByType(item: IPropertiesTable | undefined) {
         if (!item) return <></>;
