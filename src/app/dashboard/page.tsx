@@ -8,11 +8,14 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDockyShareContext } from './context';
 
-export default function Dashboard() {
-    const [slugNavigation, setSlugNavigation] = useState("");
+export default function DashboardIndex(props?: { slug?: string }) {
+    const [slugNavigation, setSlugNavigation] = useState(props?.slug ?? "");
     const [isSet, setIsSet] = useState(false);
     const { setTrees } = useDockyShareContext();
     const treesSwr = useTrees();
+
+
+    console.log('==> slugNavigation', slugNavigation)
 
     // Largeur du menu redimensionnable
     const minWidth = 200;
@@ -77,7 +80,7 @@ export default function Dashboard() {
                 style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
             >
 
-                <DashMenu navigation={onMenuNavigate} />
+                <DashMenu navigation={onMenuNavigate} activeSlug={slugNavigation} />
                 {/* Poignée de redimensionnement */}
                 {/* <div
                     className="h-full w-2 flex items-center justify-center cursor-col-resize select-none z-20"
@@ -99,7 +102,7 @@ export default function Dashboard() {
 
             {/* Contenu à droite */}
             <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800 relative">
-                <DashContent slug={slugNavigation} height={contentHeight} width={contentWidth} />
+                <DashContent slug={slugNavigation} navigation={onMenuNavigate} height={contentHeight} width={contentWidth} />
             </div>
 
             <ToastContainer position="bottom-center"

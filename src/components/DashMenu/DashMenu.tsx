@@ -9,6 +9,7 @@ import DockyMenu from './DockyMenu';
 
 export interface DashMenuProps {
     navigation: (dockySlug: string) => void
+    activeSlug?: string
 }
 
 
@@ -61,7 +62,7 @@ export default function DashMenu(props: DashMenuProps) {
             className="flex-1 h-full border-r border-black "
             aria-label="Sidebar"
         >
-            {DockyMenu(trees, onEditAction, onAddDivAction, onAddAction, undefined)}
+            {DockyMenu(trees, onEditAction, onAddDivAction, onAddAction, undefined, props.activeSlug)}
             <CreateModal {...modalProps} />
         </div >
 

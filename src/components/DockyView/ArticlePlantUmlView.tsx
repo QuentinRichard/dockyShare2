@@ -1,10 +1,10 @@
 
 
-import { ViewProps } from './ViewProps';
+import { ViewContentProps } from '../DashContent/DockyContentTools';
 
 
 
-export default function ArticlePlantUmlView(props: ViewProps) {
+export default function ArticlePlantUmlView(props: ViewContentProps) {
     return (
         <div className="border-gray-400 border-2 h-full w-full flex-col shrink p-4 overflow-auto">
             <div className='flex'>
@@ -21,8 +21,7 @@ export default function ArticlePlantUmlView(props: ViewProps) {
                 </div>
             </div>
             <div>
-                {/* onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }} */}
-                {props.toolbar && <props.toolbar ></props.toolbar>}
+                {props.toolbar && <props.toolbar slug={props.data.slug} nav={() => props.nav}></props.toolbar>}
             </div>
         </div >
     )

@@ -2,11 +2,11 @@
 
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ViewProps } from './ViewProps';
+import { ViewContentProps } from '../DashContent/DockyContentTools';
 
 
 
-export default function ArticleMdView(props: ViewProps) {
+export default function ArticleMdView(props: ViewContentProps) {
     return (
         <div className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto">
 
@@ -14,8 +14,8 @@ export default function ArticleMdView(props: ViewProps) {
             {props.data!.data['content'] &&
                 < Markdown remarkPlugins={[remarkGfm]}>{props.data.data.content}</Markdown>
             }
-            {/* onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }} */}
-            {props.toolbar && <props.toolbar slug={props.data.slug}></props.toolbar>}
+
+            {props.toolbar && <props.toolbar slug={props.data.slug} nav={props.nav}></props.toolbar>}
         </div >
     )
 }

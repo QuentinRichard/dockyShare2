@@ -1,11 +1,11 @@
 
 
 import 'tldraw/tldraw.css';
-import { ViewProps } from './ViewProps';
+import { ViewContentProps } from '../DashContent/DockyContentTools';
 
 
 
-export default function ArticleBoardDrawView(props: ViewProps) {
+export default function ArticleBoardDrawView(props: ViewContentProps) {
 
     return (
         <div className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto">
@@ -21,7 +21,7 @@ export default function ArticleBoardDrawView(props: ViewProps) {
                 {props.data!.description && props.data.description}
             </div>
             {/* onSave={async () => { await onSave() }} onCancel={async () => { onCancel() }} */}
-            {props.toolbar && <props.toolbar slug={props.data.slug}></props.toolbar>}
+            {props.toolbar && <props.toolbar slug={props.data.slug} nav={() => props.nav}></props.toolbar>}
         </div >
     )
 }

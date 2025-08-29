@@ -32,7 +32,8 @@ export default function DockyMenu(
     onEditAction: undefined | ((slug: string) => void),
     onAddDivAction: undefined | ((id: number, type: PropertyTreeType) => void),
     onAddAction: undefined | ((id: number, typep: PropertyTreeType) => void),
-    onClickAction: undefined | ((id: number | string) => void)
+    onClickAction: undefined | ((id: number | string) => void),
+    activeSlug?: string
 ) {
     const ListItem = ({
         level = 0,
@@ -237,6 +238,7 @@ export default function DockyMenu(
     return (
         <TreeMenu
             data={getFormatedTree(trees)}
+            activeKey={activeSlug ?? ""}
             onClickItem={({ key, label, ...props }) => {
                 if (onClickAction) onClickAction(key);
 
