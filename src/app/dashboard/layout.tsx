@@ -38,7 +38,7 @@ export default function DashbordLayout({
 
     return (
         <DockyShareContext.Provider value={dockyShareContext}>
-            <div className="h-full min-h-screen flex flex-col">
+            <div className="main-content flex">
                 {children}
             </div>
         </DockyShareContext.Provider>

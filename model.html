@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Responsive avec Tailwind</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .resizer {
+      width: 5px;
+      background-color: #ddd;
+      cursor: col-resize;
+    }
+
+    .scroll-container {
+      overflow: auto;
+      height: 100%;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .main-content {
+      flex: 1;
+      min-height: 0;
+    }
+  </style>
+</head>
+<body class="layout bg-gray-50">
+
+  <!-- HEADER -->
+  <header class="bg-blue-600 text-white p-4 flex flex-col md:flex-row md:items-center md:justify-between">
+    <div class="flex items-center justify-between">
+      <h1 class="text-xl font-bold">Mon Projet</h1>
+      <!-- Bouton pour mobile -->
+      <button id="menu-button" class="md:hidden bg-blue-500 px-4 py-2 rounded">
+        Menu
+      </button>
+    </div>
+
+    <!-- Menu navigation desktop -->
+    <nav class="hidden md:flex gap-4 mt-2 md:mt-0">
+      <a href="#" class="hover:underline">Accueil</a>
+      <a href="#" class="hover:underline">À propos</a>
+      <a href="#" class="hover:underline">Contact</a>
+    </nav>
+
+    <!-- Menu navigation mobile (caché par défaut) -->
+    <nav id="mobile-menu" class="flex-col gap-2 mt-2 hidden md:hidden">
+      <a href="#" class="block py-1 hover:underline">Accueil</a>
+      <a href="#" class="block py-1 hover:underline">À propos</a>
+      <a href="#" class="block py-1 hover:underline">Contact</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content flex">
+
+    <!-- Panneau gauche -->
+    <div id="left-panel" class="w-1/2 min-w-[100px] max-w-[90%] h-full">
+      <div class="scroll-container p-4 bg-white h-full">
+        <h2 class="text-lg font-semibold mb-2">Panneau de gauche</h2>
+        <p>Contenu défilable à gauche...</p>
+        <div class="h-[2000px]"></div>
+      </div>
+    </div>
+
+    <!-- Resizer -->
+    <div id="resizer" class="resizer"></div>
+
+    <!-- Panneau droite -->
+    <div id="right-panel" class="flex-1 min-w-[100px] h-full">
+      <div class="scroll-container p-4 bg-gray-100 h-full">
+        <h2 class="text-lg font-semibold mb-2">Panneau de droite</h2>
+        <p>Contenu défilable à droite...</p>
+        <div class="h-[2000px]"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER visible uniquement sur desktop -->
+  <footer class="bg-gray-800 text-white p-4 text-center md:block hidden">
+    © 2025 Mon Projet — Tous droits réservés.
+  </footer>
+
+  <!-- SCRIPT JS -->
+  <script>
+    // Redimensionnement horizontal
+    const resizer = document.getElementById('resizer');
+    const leftPanel = document.getElementById('left-panel');
+
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', () => {
+      isResizing = true;
+      document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+      const containerOffsetLeft = leftPanel.parentNode.offsetLeft;
+      const newLeftWidth = e.clientX - containerOffsetLeft;
+
+      if (newLeftWidth > 100 && newLeftWidth < window.innerWidth - 100) {
+        leftPanel.style.width = `${newLeftWidth}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isResizing = false;
+      document.body.style.cursor = 'default';
+    });
+
+    // Affichage/masquage du menu mobile
+    const menuButton = document.getElementById('menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('flex');
+    });
+  </script>
+</body>
+</html>

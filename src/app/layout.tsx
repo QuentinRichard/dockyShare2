@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full w-full overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased layout bg-gray-50`}
       >
         <SWRConfig
           value={{
@@ -39,13 +39,12 @@ export default function RootLayout({
             },
           }}
         >
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="h-full min-h-screen flex flex-col">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <Header />
+          <main className="h-full min-h-screen flex flex-col">
+            {children}
+          </main>
+          <Footer />
+
         </SWRConfig>
       </body>
     </html>

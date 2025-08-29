@@ -101,7 +101,7 @@ export default function DashboardIndex(props?: { slug?: string }) {
             </div>
 
             {/* Contenu à droite */}
-            <div className="flex-1 h-full overflow-auto bg-gray-50 dark:bg-gray-800 relative">
+            <div id="right-panel" className="flex-1 min-w-[100px] h-full">
                 <DashContent slug={slugNavigation} navigation={onMenuNavigate} height={contentHeight} width={contentWidth} />
             </div>
 

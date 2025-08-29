@@ -49,12 +49,10 @@ export default function DashContent(props: DashContentProps) {
         }
     }
     return (
-        <div className="h-full flex flex-col  border-gray-400 shrink">
-            <div className="flex-1 h-full min-h-0">
-                {/* {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>} */}
+        <div className="scroll-container p-4 bg-gray-100 h-full">
+            {/* {data && props.slug.length > 0 ? getViewConfig(data) : <div className="p-4">loading...</div>} */}
 
-                {data && props.slug.length > 0 ? getContentEditNode(data, props.height, props.width, dashContentEditToolbarbuilder) : <div className="p-4">loading...</div>}
-            </div>
+            {data && props.slug.length > 0 ? getContentEditNode(data, props.height, props.width, dashContentEditToolbarbuilder) : <div className="p-4">loading...</div>}
         </div>
     );
 }

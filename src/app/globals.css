@@ -42,10 +42,22 @@
     @apply text-blue-600 underline;
   }
 }
+.resizer {
+  width: 5px;
+  background-color: #ddd;
+  cursor: col-resize;
+}
+
+/* Pour que les scrolls internes ne cachent pas le footer */
+.scroll-container {
+  overflow: auto;
+  height: 100%;
+}
 
 html, body, #__next {
   height: 100%;
   min-height: 100%;
+  margin: 0;
 }
 
 body {
@@ -54,3 +66,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Assure que le footer reste en bas */
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  min-height: 0; /* Nécessaire pour que les scrolls internes fonctionnent */
+}
