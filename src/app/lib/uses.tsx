@@ -1,5 +1,5 @@
 'use client'
-import { UpdateDockyFileData } from '@/db/schema/dockies';
+import { DockyFileData, UpdateDockyFileData } from '@/db/schema/dockies';
 import { IPropertiesTable } from '@/db/schema/property';
 import useSWR from 'swr';
 import { useTreesDefinition } from './definition';
@@ -24,6 +24,21 @@ export const fetcherPost = (payload: any) => {
 
 const fetcher = (uri: string) => fetch(uri).then((res) => res.json());
 
+export interface MeConfig {
+  trees: IPropertiesTable[],
+  dockies: DockyFileData[],
+  articles: DockyFileData[]
+}
+
+export function useMe() {
+  const { data, error, isLoading } = useSWR(`/api/auth/me`, fetcher)
+
+  return {
+    data,
+    isLoading,
+    isError: error
+  }
+}
 
 export function useTrees(type: useTreesDefinition = useTreesDefinition.FullTree) {
   const { data, error, isLoading } = useSWR(`/api/dashboard/trees?type=${type}`, fetcher)
@@ -60,8 +75,7 @@ export function useDockies() {
 }
 
 export function useGetDockeyBySlug(slug: string) {
-  //const { data, error, isLoading } = useSWR(`/api/dashboard/dockies?slug=${slug}`, fetcher)
-  const { data, error, isLoading } = useSWR(slug!.length > 0 ? [`/api/dashboard/dockies?slug=${slug}`] : null, fetcher)
+  const { data, error, isLoading } = useSWR(slug && slug!.length > 0 ? [`/api/dashboard/dockies?slug=${slug}`] : null, fetcher)
 
   return {
     data,

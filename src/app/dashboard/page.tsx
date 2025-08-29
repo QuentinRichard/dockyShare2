@@ -1,19 +1,19 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
-// import { ToastContainer } from 'react-toastify';
-import { useTrees } from '@/app/lib/uses';
+import { MeConfig, useMe } from '@/app/lib/uses';
 import DashContent from '@/components/DashContent/DashContent';
 import { NavigationAction } from '@/components/DashContent/DockyContentTools';
 import DashMenu from '@/components/DashMenu/DashMenu';
+import { useEffect, useRef, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { buildFullTree } from '../lib/definition';
 import { useDockyShareContext } from './context';
 
 export default function Dashboard(props?: { slug?: string }) {
     const [slugNavigation, setSlugNavigation] = useState({ slug: props?.slug as string, action: NavigationAction.EditAction });
     const [isSet, setIsSet] = useState(false);
-    const { setTrees } = useDockyShareContext();
-    const treesSwr = useTrees();
+    const { setTrees, setArticles, setDockies, setFullTrees } = useDockyShareContext();
+    const meConfig = useMe();
 
     // Largeur du menu redimensionnable
     const minWidth = 200;
@@ -24,34 +24,6 @@ export default function Dashboard(props?: { slug?: string }) {
     const [isResizing, setIsResizing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-
-    // const [page, setPage] = useState("home");
-    // const [params, setParams] = useState<{ [key: string]: string }>({});
-    // const loadFromHash = () => {
-    //     const hash = window.location.hash.replace("#", "");
-    //     if (!hash) return;
-
-    //     const [route, query] = hash.split("?");
-    //     setPage(route);
-    //     console.log('loadFromHash', route, query)
-
-    //     if (query) {
-    //         const searchParams = new URLSearchParams(query);
-    //         const obj: { [key: string]: string } = {};
-    //         searchParams.forEach((value, key) => (obj[key] = value));
-    //         setParams(obj);
-    //     } else {
-    //         setParams({});
-    //     }
-    // };
-    // const navigate = (target: string, extraParams?: Record<string, string>) => {
-    //     let newHash = target;
-    //     if (extraParams) {
-    //         const query = new URLSearchParams(extraParams).toString();
-    //         newHash += "?" + query;
-    //     }
-    //     window.location.hash = newHash;
-    // };
 
     useEffect(() => {
         if (!isResizing) return;
@@ -87,10 +59,14 @@ export default function Dashboard(props?: { slug?: string }) {
         };
     }, [isResizing]);
 
-    if (treesSwr.data && treesSwr.data.length > 0 && !isSet) {
+    if (meConfig.data && !isSet) {
+        const config = meConfig.data as MeConfig;
         setTimeout(() => {
+            setTrees(config.trees);
+            setFullTrees(buildFullTree(config.trees, config.dockies, config.articles));
+            setDockies(config.dockies);
+            setArticles(config.articles);
             setIsSet(true);
-            setTrees(treesSwr.data)
         }, 0)
     }
 
@@ -109,17 +85,9 @@ export default function Dashboard(props?: { slug?: string }) {
             >
 
                 <DashMenu navigation={onMenuNavigate} activeSlug={slugNavigation.slug} />
-                {/* Poignée de redimensionnement */}
-                {/* <div
-                    className="h-full w-2 flex items-center justify-center cursor-col-resize select-none z-20"
-                    onMouseDown={() => setIsResizing(true)}
-                    role="separator"
-                    aria-orientation="vertical"
-                    tabIndex={0}
-                >
-                    <div className="w-1 h-16 bg-gray-400 rounded-full" />
-                </div> */}
             </div>
+
+            {/* Poignée de redimensionnement */}
             <div
                 className="w-2 cursor-col-resize bg-gray-200 hover:bg-emerald-400 z-10 flex items-center"
                 onMouseDown={() => setIsResizing(true)}

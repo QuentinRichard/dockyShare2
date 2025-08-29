@@ -10,6 +10,8 @@ export interface DockyContext {
     setUserRules: (rules: Rules) => void,
     trees: IPropertiesTable[],
     setTrees: (tab: IPropertiesTable[]) => void,
+    fullTrees: IPropertiesTable[],
+    setFullTrees: (tab: IPropertiesTable[]) => void,
     dockies: DockyFileData[],
     setDockies: (tab: DockyFileData[]) => void,
     articles: DockyFileData[]
@@ -31,6 +33,8 @@ export const defaultContext: DockyContext = {
     setUserRules: () => { },
     trees: [],
     setTrees: () => { },
+    fullTrees: [],
+    setFullTrees: () => { },
     dockies: [],
     setDockies: () => { },
     articles: [],

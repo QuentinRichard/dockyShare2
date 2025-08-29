@@ -11,7 +11,7 @@ import { addDockyToTrees } from '../trees/utils';
 export async function GET(request: NextRequest) {
     //TODO Manage the Public route => provide public docky and article
     // and with session .......
-    //await getSession();
+    const session = await getSession();
 
     const slug = request.nextUrl.searchParams.get("slug")
     if (slug !== undefined && slug?.length === 0) {
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     const type = request.nextUrl.searchParams.get("type")
-    const ret = await getDockies(10, type === "Docky" ? DockyFileTypeEnum.Docky : DockyFileTypeEnum.Article);
+    const ret = await getDockies(session?.userId!, type === "Docky" ? DockyFileTypeEnum.Docky : DockyFileTypeEnum.Article);
 
     return NextResponse.json(ret);
 }
