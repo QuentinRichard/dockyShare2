@@ -2,7 +2,7 @@
 
 import { callDockiesPut } from '@/app/lib/uses';
 import { UpdateDockyFileData } from '@/db/schema/dockies';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { TLEditorSnapshot, TLUserPreferences, Tldraw, getSnapshot, loadSnapshot, useEditor, useTldrawUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { ViewProps } from './ViewProps';
@@ -69,6 +69,9 @@ function SnapshotToolbar(props: { onSave: (content: string) => void, content: st
 
 export default function ArticleBoardDrawEdit(props: ViewProps) {
     const [snapshot, setSnapshot] = useState(props.data!.data['content'] || jsonSnapshot)
+    const [height, setHeight] = useState(0)
+    const [width, setWidth] = useState(0)
+    const tlDrawRef = useRef<HTMLDivElement>(null);
 
     const [userPreferences, setUserPreferences] = useState<TLUserPreferences>({
         id: props.data.slug,
@@ -76,6 +79,12 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
     })
     const user = useTldrawUser({ userPreferences, setUserPreferences })
 
+    useEffect(() => {
+        const rect = tlDrawRef.current!.getBoundingClientRect();
+        setHeight(rect.height);
+        setWidth(rect.width);
+
+    }, []);
     const onSnapshotToolbarProvider = () => {
         return SnapshotToolbar({ onSave, content: snapshot })
     }
@@ -86,11 +95,11 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
     }
 
     return (
-        <div className="border-gray-400 border-2 flex-1 w-full  h-full shrink p-0 overflow-auto">
+        <div className="border-gray-400 border-2 flex-1 w-full  h-full shrink p-0 overflow-auto" ref={tlDrawRef} >
             {
                 // props && props.data!.data['content'] && props.data!.data['content'].length > 0 ?
                 //, width: props.width
-                <div style={{ position: 'fixed', inset: `0 0 0 450`, height: props.height, width: props.width + 450 }} className="tldraw__editor">
+                <div style={{ position: 'fixed', inset: `0 0 0 450`, height: height - 100, width: width }} className="tldraw__editor">
 
                     {/* snapshot={jsonSnapshot} */}
                     <Tldraw
@@ -102,7 +111,6 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
 
                     {props.toolbar && <props.toolbar /* onSave={async () => { await onSave() }} onCancel={async () => { onCancel() } }*/></props.toolbar>}
                 </div>
-                // : <div>Pas de données</div>
             }
 
         </div >

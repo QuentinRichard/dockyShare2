@@ -26,15 +26,15 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
     const minWidth = 200;
     const [menuWidth, setMenuWidth] = useState(minWidth);
     const [isResizing, setIsResizing] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerPlantUmlRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!isResizing) return;
 
         const handleMouseMove = (e: MouseEvent) => {
             // On calcule la position relative au conteneur parent
-            if (containerRef.current) {
-                const rect = containerRef.current.getBoundingClientRect();
+            if (containerPlantUmlRef.current) {
+                const rect = containerPlantUmlRef.current.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 setMenuWidth(Math.max(180, Math.min(x, rect.width)));
             }
@@ -100,12 +100,12 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
 
     }
     return (
-        <div className="border-gray-400 border-2 w-full flex-1 h-full shrink p-4 overflow-auto">
-
-            <div ref={containerRef} className="h-full w-full  flex flex-row relative" style={{ height: props.height, width: props.width }} id='dashboard'>
+        <div className="border-gray-400 border-2 w-full flex-1  shrink p-4 overflow-auto">
+            {/* style={{ height: props.height, width: props.width }} */}
+            <div ref={containerPlantUmlRef} className="w-full  flex flex-row relative" >
                 {/* Menu à gauche + poignée */}
                 <div
-                    className="h-full bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
+                    className=" bg-white dark:bg-gray-900 border-r border-gray-400 transition-all duration-100 relative"
                     style={{ width: menuWidth, minWidth: minWidth, maxWidth: 800 }}
                 >
                     <textarea
@@ -131,8 +131,8 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
                 </div>
 
                 {/* Contenu à droite */}
-                <div className="h-full w-full min-h-0 flex overflow-auto bg-red-600 dark:bg-gray-800 ">
-                    <img key={key} ref={imageSrcRef} src={imgSrc} className="h-full w-full" />
+                <div className="overflow-auto dark:bg-gray-800 justify-center">
+                    <img key={key} ref={imageSrcRef} src={imgSrc} />
                     {/* src={`http://www.plantuml.com/plantuml/img/${encoded}`} */}
                 </div>
 

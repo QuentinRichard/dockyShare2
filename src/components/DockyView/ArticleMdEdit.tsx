@@ -48,9 +48,10 @@ export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
         console.log("Cancel");
     }
     return (
-        <div key={`${key}`} className="border-gray-400 border-2 h-full w-full shrink p-4 overflow-auto" >
+        <div key={`${key}`} className="border-gray-400 border-2  w-full shrink p-4 overflow-auto" >
 
-            <div className="flex flex-col relative" style={{ height: props.height, width: props.width }} >
+            {/* style={{ height: props.height, width: props.width }} */}
+            <div className="flex flex-col relative"  >
                 {/* //TODO Add all property formular ;) -)*/}
                 {markdown &&
                     <MDXEditor
