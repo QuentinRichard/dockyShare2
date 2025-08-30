@@ -37,7 +37,7 @@ export interface DockyMenuAction {
 }
 
 export default function DockyMenu(
-    trees: IPropertiesTable[],
+    treesMenu: IPropertiesTable[],
     action: DockyMenuAction,
     activeSlug?: string
 ) {
@@ -90,8 +90,8 @@ export default function DockyMenu(
             </div>
         </ListGroupItem >
     );
-    const FormatedTree = (trees: IPropertiesTable[], formated: TreeNode[]) => {
-        trees.forEach(t => {
+    const FormatedTree = (treesIter: IPropertiesTable[], formated: TreeNode[]) => {
+        treesIter.forEach(t => {
             formated.push({
                 key: t.content!.length ? t.content : t.id!.toString(),
                 label: t.name,
@@ -101,9 +101,9 @@ export default function DockyMenu(
         return formated;
     }
 
-    const getFormatedTree = (trees: IPropertiesTable[]) => {
+    const getFormatedTree = (treesIter: IPropertiesTable[]) => {
         const formated: TreeNode[] = [];
-        const result = FormatedTree(trees, formated);
+        const result = FormatedTree(treesIter, formated);
         return result;
     }
 
@@ -113,11 +113,11 @@ export default function DockyMenu(
 
     const getTreeByKey = (key: string): IPropertiesTable | undefined => {
         const fKey = key.split('/').at(-1);
-        if (!trees) return undefined;
+        if (!treesMenu) return undefined;
         let ret: IPropertiesTable | undefined = undefined;
-        const findTree = (trees: IPropertiesTable[]) => {
-            for (let i = 0; i < trees.length; i++) {
-                const t = trees[i];
+        const findTree = (treesFind: IPropertiesTable[]) => {
+            for (let i = 0; i < treesFind.length; i++) {
+                const t = treesFind[i];
                 if (t.content === fKey || t.id?.toString() === fKey) {
                     ret = t;
                     return;
@@ -127,28 +127,28 @@ export default function DockyMenu(
                 }
             }
         }
-        findTree(trees);
+        findTree(treesMenu);
         return ret;
     }
 
 
     const ViewTools = (slug: string) => (
-        <DynamicIcon name="receipt-text" size={44}
+        <DynamicIcon key={`dymIconV_${slug}`} name="receipt-text" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             onClick={() => { if (action.onViewAction) action.onViewAction(slug) }} />
     );
     const EditTools = (slug: string) => (
-        <DynamicIcon name="file-pen-line" size={44}
+        <DynamicIcon key={`dymIconE_${slug}`} name="file-pen-line" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             onClick={() => { if (action.onEditAction) action.onEditAction(slug) }} />
     );
     const AddTools = (id: number, type: PropertyTreeType) => (
-        <DynamicIcon name="list-plus" size={44}
+        <DynamicIcon key={`dymIconA_${id}`} name="list-plus" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:group-hover:text-white"
             onClick={() => { if (action.onAddAction) action.onAddAction(id, type) }} />
     );
     const AddDivTools = (id: number, type: PropertyTreeType) => (
-        <DynamicIcon name="folder-plus" size={44}
+        <DynamicIcon key={`dymIconD_${id}`} name="folder-plus" size={44}
             className="opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             onClick={() => { if (action.onAddDivAction) action.onAddDivAction(id, type) }} />
     );
@@ -261,7 +261,7 @@ export default function DockyMenu(
     }
     return (
         <TreeMenu
-            data={getFormatedTree(trees)}
+            data={getFormatedTree(treesMenu)}
             activeKey={activeSlug ?? getActiveSlug(activeSlug!)}
             onClickItem={({ key, label, ...props }) => {
                 if (action.onClickAction) action.onClickAction(key);

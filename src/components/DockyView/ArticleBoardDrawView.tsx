@@ -6,7 +6,6 @@ import { ViewContentProps } from '../DashContent/DockyContentTools';
 
 
 export default function ArticleBoardDrawView(props: ViewContentProps) {
-    console.log('props.data!.data!', props.data!.data!)
 
     return (
         <div className="border-blue-400 border-2 w-full shrink p-4 overflow-auto">

@@ -58,11 +58,11 @@ export function getContentEditNode(data: DockyFileData, height: number, width: n
         if (data.type === DockyFileTypeEnum.Article) {
             switch (data.cat! as DockyFileCatEnum) {
                 case DockyFileCatEnum.Article_MD:
-                    return (<ArticleMdEdit data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticleMdEdit>);
+                    return (<ArticleMdEdit key={`amde_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticleMdEdit>);
                 case DockyFileCatEnum.Article_Graph:
-                    return (<ArticlePlantUmlEdit data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticlePlantUmlEdit>);
+                    return (<ArticlePlantUmlEdit key={`apue_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticlePlantUmlEdit>);
                 case DockyFileCatEnum.Article_Board:
-                    return (<ArticleBoardDrawEdit data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticleBoardDrawEdit>);
+                    return (<ArticleBoardDrawEdit key={`abde_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder}></ArticleBoardDrawEdit>);
                 default:
                     return (<div>Cat pas encore dev {data.type}</div>);
             }
@@ -80,7 +80,7 @@ export type DashViewContentToolbarBuilder = (props: DashViewContentToolbarProps)
 export function dashViewToolbarBuilder(props: DashViewContentToolbarProps) {
     //TODO Nav mettre une action en position relatif afin de pouvoir passer en mode edite
     const clickDebug = () => {
-        props.nav(props.slug)
+        props.nav(props.slug, NavigationAction.EditAction)
     }
     return (
         <div className="border-b border-t border-gray-400 p-2 flex justify-center gap-2">
@@ -97,11 +97,11 @@ export function getContentViewNode(data: DockyFileData, height: number, width: n
         if (data.type === DockyFileTypeEnum.Article) {
             switch (data.cat! as DockyFileCatEnum) {
                 case DockyFileCatEnum.Article_MD:
-                    return (<ArticleMdView data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticleMdView>);
+                    return (<ArticleMdView key={`amdv_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticleMdView>);
                 case DockyFileCatEnum.Article_Graph:
-                    return (<ArticlePlantUmlView data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticlePlantUmlView>);
+                    return (<ArticlePlantUmlView key={`apuv_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticlePlantUmlView>);
                 case DockyFileCatEnum.Article_Board:
-                    return (<ArticleBoardDrawView data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticleBoardDrawView>);
+                    return (<ArticleBoardDrawView key={`adbv_${data.slug}`} data={data} height={height} width={width} toolbar={toolsbarBuilder} nav={nav}></ArticleBoardDrawView>);
                 default:
                     return (<div>Cat pas encore dev {data.type}</div>);
             }

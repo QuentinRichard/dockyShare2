@@ -13,12 +13,12 @@ import _jsonSnapshot from './boardDrawInit.json';
 /* @typescript-eslint/no-explicit-any */
 const jsonSnapshot = _jsonSnapshot as unknown as TLEditorSnapshot
 
-interface BoradDrawSnaphot {
+interface BoardDrawSnaphot {
     session: TLEditorSnapshot
     imgSrc: string | unknown
 }
 
-function SnapshotToolbar(props: { onSave: (obj: BoradDrawSnaphot) => void, content: BoradDrawSnaphot }) {
+function SnapshotToolbar(props: { onSave: (obj: BoardDrawSnaphot) => void, content: BoardDrawSnaphot }) {
     const editor = useEditor()
     const [snapshot] = useState(props.content ? props.content : { session: jsonSnapshot })
     const [opts, setOpts] = useState<TLImageExportOptions>({
@@ -43,7 +43,6 @@ function SnapshotToolbar(props: { onSave: (obj: BoradDrawSnaphot) => void, conte
             //     : undefined,
         })
         const imgSrc = await blobToBase64(blob);
-        console.log('document', imgSrc)
         if (props.onSave) props.onSave({ session: { document, session }, imgSrc })
     }, [editor])
 
@@ -114,7 +113,7 @@ export default function ArticleBoardDrawEdit(props: ViewProps) {
     const onSnapshotToolbarProvider = () => {
         return SnapshotToolbar({ onSave, content: snapshot })
     }
-    const onSave = async (content: string) => {
+    const onSave = async (content: BoardDrawSnaphot) => {
         const newData: UpdateDockyFileData = { ...props.data, data: { content } };
         await callDockiesPut(newData);
         console.log("On Server")

@@ -18,6 +18,9 @@ Refaire la partie Dashboard pour quelle soit en mode SPA et navigable avec le br
     route dashboard/view/{slug}
 
 
+--------------------
+draw.io npm/package/react-drawio
+
 Docky:
 ------
 {

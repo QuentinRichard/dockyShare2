@@ -27,7 +27,6 @@ export default function ArticleMdEdit(props: ViewProps) {// DockyFileData
     const [markdown, setMarkdown] = useState(props.data!.data['content'] || emptyMD);
     const [key, setKey] = useState(Date.now());
 
-    console.log("ArticleMdEdit", props.data);
     const onContentChange = (md: string) => {
         if (md.length === 0) md = emptyMD;
         setMarkdown(md);

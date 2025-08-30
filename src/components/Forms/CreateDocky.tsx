@@ -4,7 +4,6 @@ import { callDockiesPost, useTrees } from "@/app/lib/uses";
 import DockyMenu from "@/components/DashMenu/DockyMenu";
 import { DockyFileCatEnum, DockyFileTypeEnum, PostDockyFileData } from "@/db/schema/dockies";
 import { IPropertiesTable } from "@/db/schema/property";
-import { useState } from "react";
 
 
 export interface DockyDataForm {
@@ -20,11 +19,10 @@ export interface DockyFormProps {
 
 
 export default function CreateDockyForm(props: DockyFormProps) {
-    const { data, isError, isLoading } = useTrees(useTreesDefinition.TreeDocky);
-    const [parentId, setParentId] = useState("");
+    const { data, isLoading } = useTrees(useTreesDefinition.TreeDocky);
 
     const onMenuClick = (id: number | string) => {
-        setParentId(typeof id === 'number' ? id.toString() : id);
+
     }
 
     const { setTrees } = useDockyShareContext();
@@ -77,7 +75,7 @@ export default function CreateDockyForm(props: DockyFormProps) {
                                 <label htmlFor="tree_id" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a destination</label>
                                 {!isLoading && data &&
                                     <div className="h-48 overflow-y-auto border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        {DockyMenu(data, undefined, undefined, undefined, onMenuClick)}
+                                        {DockyMenu(data, { onClickAction: onMenuClick })}
                                     </div>
                                 }
                                 {isLoading &&

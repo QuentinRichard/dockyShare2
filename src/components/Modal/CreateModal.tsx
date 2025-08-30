@@ -17,7 +17,6 @@ export interface ModalProps {
 }
 
 export function getModalType(type: PropertyTreeType) {
-    console.log(type);
     switch (type) {
         case PropertyTreeType.AdminLibraryDocky:
             return 'Docky';

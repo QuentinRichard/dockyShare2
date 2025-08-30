@@ -10,8 +10,6 @@ export async function getArticles(userId: number): Promise<DockyFileData[]> {
             .from(dockiesTable)
             .where(and(eq(dockiesTable.userId, userId), eq(dockiesTable.type, DockyFileTypeEnum.Article)));
 
-        rows.forEach(e => console.log(JSON.stringify(e)));
-
         return rows as DockyFileData[];
     } catch (e) {
         console.log(e);

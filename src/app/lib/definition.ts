@@ -41,7 +41,6 @@ export function mergeDockyToTree(dockies: DockyFileData[], trees: Map<number, IP
 
 export function buildFullTree(trees: IPropertiesTable[], dockies: DockyFileData[], articles: DockyFileData[]) {
 
-    console.log("### Calling buildFullTree");
     const fullTree: IPropertiesTable[] = trees.slice();
 
     const map = new Map<number, IPropertiesTable>();

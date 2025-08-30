@@ -12,6 +12,7 @@ import { useDockyShareContext } from './context';
 export default function Dashboard(props?: { slug?: string }) {
     const [slugNavigation, setSlugNavigation] = useState({ slug: props?.slug as string, action: NavigationAction.EditAction });
     const [isSet, setIsSet] = useState(false);
+    const [timeOutId, setTimeOutId] = useState(undefined as unknown as NodeJS.Timeout);
     const { setTrees, setArticles, setDockies, setFullTrees } = useDockyShareContext();
     const meConfig = useMe();
 
@@ -61,12 +62,14 @@ export default function Dashboard(props?: { slug?: string }) {
 
     if (meConfig.data && !isSet) {
         const config = meConfig.data as MeConfig;
-        setTimeout(() => {
+
+        if (isSet) return;
+        setIsSet(true);
+        const to = setTimeout(() => {
             setTrees(config.trees);
             setFullTrees(buildFullTree(config.trees, config.dockies, config.articles));
             setDockies(config.dockies);
             setArticles(config.articles);
-            setIsSet(true);
         }, 0)
     }
 

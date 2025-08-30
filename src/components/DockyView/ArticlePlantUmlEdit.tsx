@@ -72,8 +72,6 @@ export default function ArticlePlantUmlEdit(props: ViewProps) {
                 .then(res => { return res.blob() })
 
             const base64 = await blobToBase64(blob) as string;
-            //imageSrcRef.current!.setAttribute('src', URL.createObjectURL(blob));
-            console.log('base64', base64);
             setEncoded(encoded);
             setImgSrc(base64);
             setKey(Date.now());

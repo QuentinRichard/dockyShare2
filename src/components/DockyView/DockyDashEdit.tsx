@@ -26,7 +26,7 @@ export default function DockyDashEdit(props: ViewProps) {
             Add other tool to Add Article or Create
             <hr></hr>
             {(props.data.children as unknown as DockyFileData[])?.map((child: DockyFileData) =>
-                getContentEditNode(child, props.height / (props.data?.children?.length ?? 0) + 1, props.width, dashContentEditToolbarbuilder, props.nav)
+                getContentEditNode(child, props.height / (props.data?.children?.length ?? 0) + 1, props.width, dashContentEditToolbarbuilder)
             )}
         </div>
     );

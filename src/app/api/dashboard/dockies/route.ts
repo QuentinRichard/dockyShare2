@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     const type = request.nextUrl.searchParams.get("type")
-    const ret = await getDockies(session?.userId!, type === "Docky" ? DockyFileTypeEnum.Docky : DockyFileTypeEnum.Article);
+    const ret = await getDockies(session?.userId as number, type === "Docky" ? DockyFileTypeEnum.Docky : DockyFileTypeEnum.Article);
 
     return NextResponse.json(ret);
 }
